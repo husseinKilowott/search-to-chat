@@ -105,11 +105,13 @@ function getCookie(name) {
 }
 const prevSessionId = getCookie("__prevSessionId");
 
-
+let iframeLoaded = false;
+let pendingInput = null;
 
 var closeIframeButton;
-function openIframe() {
-  // Check if iframeContainer is already created
+
+
+function setupIframeOnLoad() {
   if (!iframeContainer) {
     iframeContainer = document.createElement("div");
     iframeContainer.id = "iframeContainer";
@@ -121,8 +123,19 @@ function openIframe() {
     iframe.height = "100%";
     iframe.frameBorder = "0";
 
-    // Set iframe src dynamically based on the environment
-    if (window.chatConfig.env == "skillbuilder" || window.chatConfig.env == "skl") {
+    iframe.addEventListener("load", function () {
+      iframeLoaded = true;
+      if (pendingInput !== null) {
+        iframe.contentWindow.postMessage({ type: "setInput", value: pendingInput }, "*");
+        pendingInput = null;
+      }
+    });
+
+    if (window.chatConfig.env == "dev") {
+      iframe.src = prevSessionId
+        ? `http://localhost:3000/external-ai-chat/${window.chatConfig.chatId}?prevSessionId=${prevSessionId}`
+        : `http://localhost:3000/external-ai-chat/${window.chatConfig.chatId}`;
+    } else if (window.chatConfig.env == "skillbuilder" || window.chatConfig.env == "skl") {
       iframe.src = prevSessionId
         ? `https://skillbuilder.io/external-ai-chat/${window.chatConfig.chatId}?prevSessionId=${prevSessionId}`
         : `https://skillbuilder.io/external-ai-chat/${window.chatConfig.chatId}`;
@@ -139,7 +152,6 @@ function openIframe() {
     iframeContainer.appendChild(iframe);
     document.body.appendChild(iframeContainer);
 
-    // Attach listeners only once here
     closeIframeButton.addEventListener("click", function () {
       iframeContainer.style.display = "none";
       document.body.style.overflow = "";
@@ -152,8 +164,13 @@ function openIframe() {
       button.style.display = "none";
     });
   }
+  // Hide iframe container by default
+  iframeContainer.style.display = "none";
+}
+setupIframeOnLoad();
 
-  // Always just show iframe
+
+function openIframe() {
   button.style.display = "none";
   iframeContainer.style.display = "block";
   iframeContainer.style.bottom = "5px";
@@ -181,7 +198,14 @@ function injectChatInputBox() {
     function triggerIframe() {
     if (!input.value.trim()) return; // don't trigger empty
     openIframe(input.value.trim());
-    input.value = ""; // clear input after submit
+    // input.value = ""; // clear input after submit
+
+     if (iframeLoaded) {
+    iframe.contentWindow.postMessage({ type: "setInput", value: input.value.trim() }, "*");
+  } else {
+    pendingInput = input.value.trim();
+  }
+  input.value = "";
   }
 
   input.addEventListener("keypress", (e) => {
