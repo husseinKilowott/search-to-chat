@@ -10,6 +10,7 @@ let searchBarNav = {
   shape: 999, 
   size: 40,  
   placeHolderText: "Ask me anything...", 
+  backgroundColor:"#ffffff"
 };
 
 let bubbleIconUrl = null;
@@ -44,6 +45,7 @@ async function fetchColors() {
     searchBarNav.shape = colors.data.shape
         searchBarNav.size = colors.data.size
         searchBarNav.placeHolderText = colors.data.placeholderText || searchBarNav.placeHolderText;
+        searchBarNav.backgroundColor = colors.data.backgroundColor || searchBarNav.backgroundColor;
 
     appendButton();
     updateButtonStyles();
@@ -76,8 +78,9 @@ function updateInputBoxStyles() {
   container.style.borderRadius = `${searchBarNav.shape}px`;
   container.style.height = `${searchBarNav.size}px`;
   container.style.border = `1px solid ${chatColors.AccentColor}`;
-
+  container.style.backgroundColor = searchBarNav.backgroundColor;
   const input = container.querySelector("input");
+  input.style.backgroundColor = searchBarNav.backgroundColor;
  input.placeholder = searchBarNav.placeHolderText 
 
 const sendButton = document.getElementsByClassName("send-button")[0];
