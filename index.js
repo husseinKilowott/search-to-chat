@@ -7,9 +7,21 @@ const chatColors = {
 
 
 let searchBarNav = {
-  shape: "rounded", // default
-  size: "medium",   // default
-  placeHolderText: "Tell me about you", // default
+  accentColor: "#1D4ED8",
+  shape: 0, 
+  size: 40,  
+  placeHolderText: "Ask me anything...", 
+  backgroundColor:"#ffffff",
+  fontColor: "#000000"
+};
+
+let searchBarHero = {
+  accentColor: "#1D4ED8",
+  shape: 0, 
+  size: 40,  
+  placeHolderText: "Ask me anything...", 
+  backgroundColor:"#ffffff",
+  fontColor: "#000000"
 };
 
 let bubbleIconUrl = null;
@@ -41,16 +53,25 @@ async function fetchColors() {
     chatColors.FontColor = colors.data.fontColor || "#FFFFFF";
     bubbleIconUrl = colors.data.bubbleIcon || null;
 
-        if (colors.data.searchBarNav) {
-      searchBarNav = {
-        shape: colors.data.searchBarNav.shape || searchBarNav.shape,
-        size: colors.data.searchBarNav.size || searchBarNav.size,
-        placeHolderText: colors.data.searchBarNav.placeHolderText || searchBarNav.placeHolderText,
-      };
-    }
+    searchBarNav.shape = colors.data.shapeNav
+        searchBarNav.size = colors.data.sizeNav
+        searchBarNav.placeHolderText = colors.data.placeholderText || searchBarNav.placeHolderText;
+        searchBarNav.backgroundColor = colors.data.backgroundColorNav || searchBarNav.backgroundColor;
+        searchBarNav.accentColor = colors.data.accentColorNav || searchBarNav.accentColor;
+        searchBarNav.fontColor = colors.data.fontColorNav || searchBarNav.fontColor;
+
+        searchBarHero.shape = colors.data.shapeHero || searchBarHero.shape;
+        searchBarHero.size = colors.data.sizeHero || searchBarHero.size;
+        searchBarHero.placeHolderText = colors.data.placeholderHero || searchBarHero.placeHolderText;
+        searchBarHero.backgroundColor = colors.data.backgroundColorHero || searchBarHero.backgroundColor;
+        searchBarHero.accentColor = colors.data.accentColorHero || searchBarHero.accentColor;
+        searchBarHero.fontColor = colors.data.fontColorHero || searchBarHero.fontColor;
+
     appendButton();
     updateButtonStyles();
-    return colors; // Assuming the API returns an object with `BackgroundColor` and `AccentColor`
+    updateInputBoxStyles()
+    updateMobileButtonStyles()
+    return colors; 
   } catch (error) {
     console.error("Error fetching colors:", error);
     appendButton();
@@ -69,6 +90,73 @@ function updateButtonStyles() {
     button.innerHTML = isCMU ? cmuIcon : getChatIcon(chatColors.AccentColor);
   }
 }
+
+function updateMobileButtonStyles() {
+  let heroSearchIcon =document.querySelector(".hero-section-btn")
+  
+heroSearchIcon.innerHTML =`
+<svg width="40" height="40" viewBox="0 0 22 22" fill=${searchBarHero.accentColor} xmlns="http://www.w3.org/2000/svg">
+<path d="M10.4175 4.82227C10.7557 4.82227 11.0495 5.05692 11.1245 5.38672L11.6636 7.76074C11.8234 8.46347 12.3729 9.01208 13.0757 9.17188L15.4497 9.71191C15.7794 9.78692 16.0131 10.0799 16.0132 10.418C16.0132 10.7562 15.7795 11.05 15.4497 11.125L13.0757 11.6641C12.3729 11.8239 11.8234 12.3734 11.6636 13.0762L11.1245 15.4502C11.0495 15.78 10.7557 16.0137 10.4175 16.0137C10.0794 16.0136 9.78643 15.7799 9.71143 15.4502L9.17139 13.0762C9.01159 12.3734 8.46298 11.8239 7.76025 11.6641L5.38623 11.125C5.05643 11.05 4.82178 10.7562 4.82178 10.418C4.82189 10.0798 5.05651 9.78688 5.38623 9.71191L7.76025 9.17188C8.46284 9.01201 9.01152 8.46333 9.17139 7.76074L9.71143 5.38672C9.78639 5.057 10.0794 4.82238 10.4175 4.82227ZM10.4175 8.60742C10.0805 9.42815 9.42766 10.0809 8.60693 10.418C9.42733 10.7548 10.0803 11.4073 10.4175 12.2275C10.7545 11.4077 11.4072 10.755 12.2271 10.418C11.4069 10.0808 10.7543 9.42782 10.4175 8.60742Z" fill=${searchBarHero.accentColor} stroke=${searchBarHero.accentColor} stroke-width="0.15"/>
+<path d="M3.70312 3.70312C7.40706 -0.000780503 13.4123 -0.000781082 17.1162 3.70312C20.6476 7.23469 20.8102 12.8568 17.6074 16.583L20.8623 19.8379C21.1453 20.1208 21.1453 20.5794 20.8623 20.8623C20.5794 21.1453 20.1208 21.1453 19.8379 20.8623L16.583 17.6074C12.8568 20.8102 7.23469 20.6476 3.70312 17.1162C-0.000781082 13.4123 -0.000780503 7.40706 3.70312 3.70312ZM16.0918 4.72754C12.9537 1.58948 7.86557 1.58948 4.72754 4.72754C1.58948 7.86557 1.58948 12.9537 4.72754 16.0918C7.86558 19.2297 12.9538 19.2298 16.0918 16.0918C19.2298 12.9538 19.2297 7.86558 16.0918 4.72754Z" fill=${searchBarHero.accentColor} stroke=${searchBarHero.accentColor} stroke-width="0.15"/>
+</svg>`;
+
+  let searchNavButton =document.querySelector(".search-icon-btn-nav")
+
+console.log("searchNavButton",searchNavButton)
+searchNavButton.innerHTML =`
+<svg width="40" height="40" viewBox="0 0 22 22" fill=${searchBarNav.accentColor} xmlns="http://www.w3.org/2000/svg">
+<path d="M10.4175 4.82227C10.7557 4.82227 11.0495 5.05692 11.1245 5.38672L11.6636 7.76074C11.8234 8.46347 12.3729 9.01208 13.0757 9.17188L15.4497 9.71191C15.7794 9.78692 16.0131 10.0799 16.0132 10.418C16.0132 10.7562 15.7795 11.05 15.4497 11.125L13.0757 11.6641C12.3729 11.8239 11.8234 12.3734 11.6636 13.0762L11.1245 15.4502C11.0495 15.78 10.7557 16.0137 10.4175 16.0137C10.0794 16.0136 9.78643 15.7799 9.71143 15.4502L9.17139 13.0762C9.01159 12.3734 8.46298 11.8239 7.76025 11.6641L5.38623 11.125C5.05643 11.05 4.82178 10.7562 4.82178 10.418C4.82189 10.0798 5.05651 9.78688 5.38623 9.71191L7.76025 9.17188C8.46284 9.01201 9.01152 8.46333 9.17139 7.76074L9.71143 5.38672C9.78639 5.057 10.0794 4.82238 10.4175 4.82227ZM10.4175 8.60742C10.0805 9.42815 9.42766 10.0809 8.60693 10.418C9.42733 10.7548 10.0803 11.4073 10.4175 12.2275C10.7545 11.4077 11.4072 10.755 12.2271 10.418C11.4069 10.0808 10.7543 9.42782 10.4175 8.60742Z" fill=${searchBarNav.accentColor} stroke=${searchBarNav.accentColor} stroke-width="0.15"/>
+<path d="M3.70312 3.70312C7.40706 -0.000780503 13.4123 -0.000781082 17.1162 3.70312C20.6476 7.23469 20.8102 12.8568 17.6074 16.583L20.8623 19.8379C21.1453 20.1208 21.1453 20.5794 20.8623 20.8623C20.5794 21.1453 20.1208 21.1453 19.8379 20.8623L16.583 17.6074C12.8568 20.8102 7.23469 20.6476 3.70312 17.1162C-0.000781082 13.4123 -0.000780503 7.40706 3.70312 3.70312ZM16.0918 4.72754C12.9537 1.58948 7.86557 1.58948 4.72754 4.72754C1.58948 7.86557 1.58948 12.9537 4.72754 16.0918C7.86558 19.2297 12.9538 19.2298 16.0918 16.0918C19.2298 12.9538 19.2297 7.86558 16.0918 4.72754Z" fill=${searchBarNav.accentColor} stroke=${searchBarNav.accentColor} stroke-width="0.15"/>
+</svg>`;
+
+}
+
+function updateInputBoxStyles() {
+  const container = document.querySelector(".input-container");
+  if (!container) return;
+
+  container.style.borderRadius = `${searchBarNav.shape}px`;
+  container.style.height = `${searchBarNav.size}px`;
+  container.style.border = `1px solid ${searchBarNav.accentColor}`;
+  container.style.backgroundColor = searchBarNav.backgroundColor;
+  const input = container.querySelector("input");
+  input.style.backgroundColor = searchBarNav.backgroundColor;
+input.style.setProperty("::placeholder", searchBarNav.fontColor, "important");
+ input.placeholder = searchBarNav.placeHolderText;
+
+   input.style.setProperty("--placeholder-color", searchBarNav.fontColor);
+
+const sendButton = document.getElementsByClassName("send-button")[0];
+sendButton.innerHTML = `
+<svg width="22" height="22" viewBox="0 0 22 22" fill=${searchBarNav.accentColor} xmlns="http://www.w3.org/2000/svg">
+<path d="M10.4175 4.82227C10.7557 4.82227 11.0495 5.05692 11.1245 5.38672L11.6636 7.76074C11.8234 8.46347 12.3729 9.01208 13.0757 9.17188L15.4497 9.71191C15.7794 9.78692 16.0131 10.0799 16.0132 10.418C16.0132 10.7562 15.7795 11.05 15.4497 11.125L13.0757 11.6641C12.3729 11.8239 11.8234 12.3734 11.6636 13.0762L11.1245 15.4502C11.0495 15.78 10.7557 16.0137 10.4175 16.0137C10.0794 16.0136 9.78643 15.7799 9.71143 15.4502L9.17139 13.0762C9.01159 12.3734 8.46298 11.8239 7.76025 11.6641L5.38623 11.125C5.05643 11.05 4.82178 10.7562 4.82178 10.418C4.82189 10.0798 5.05651 9.78688 5.38623 9.71191L7.76025 9.17188C8.46284 9.01201 9.01152 8.46333 9.17139 7.76074L9.71143 5.38672C9.78639 5.057 10.0794 4.82238 10.4175 4.82227ZM10.4175 8.60742C10.0805 9.42815 9.42766 10.0809 8.60693 10.418C9.42733 10.7548 10.0803 11.4073 10.4175 12.2275C10.7545 11.4077 11.4072 10.755 12.2271 10.418C11.4069 10.0808 10.7543 9.42782 10.4175 8.60742Z" fill=${searchBarNav.accentColor} stroke=${searchBarNav.accentColor} stroke-width="0.15"/>
+<path d="M3.70312 3.70312C7.40706 -0.000780503 13.4123 -0.000781082 17.1162 3.70312C20.6476 7.23469 20.8102 12.8568 17.6074 16.583L20.8623 19.8379C21.1453 20.1208 21.1453 20.5794 20.8623 20.8623C20.5794 21.1453 20.1208 21.1453 19.8379 20.8623L16.583 17.6074C12.8568 20.8102 7.23469 20.6476 3.70312 17.1162C-0.000781082 13.4123 -0.000780503 7.40706 3.70312 3.70312ZM16.0918 4.72754C12.9537 1.58948 7.86557 1.58948 4.72754 4.72754C1.58948 7.86557 1.58948 12.9537 4.72754 16.0918C7.86558 19.2297 12.9538 19.2298 16.0918 16.0918C19.2298 12.9538 19.2297 7.86558 16.0918 4.72754Z" fill=${searchBarNav.accentColor} stroke=${searchBarNav.accentColor} stroke-width="0.15"/>
+</svg>`;
+
+
+const containerHero = document.querySelector(".hero-input");
+  if (!containerHero) return;
+
+  containerHero.style.borderRadius = `${searchBarHero.shape}px`;
+  containerHero.style.height = `${searchBarHero.size}px`;
+  containerHero.style.border = `1px solid ${searchBarHero.accentColor}`;
+  containerHero.style.backgroundColor = searchBarHero.backgroundColor;
+  const inputHero = containerHero.querySelector("input");
+  inputHero.style.backgroundColor = searchBarHero.backgroundColor;
+  inputHero.placeholder = searchBarHero.placeHolderText;
+  inputHero.style.setProperty("::placeholder", searchBarHero.fontColor, "important");
+  const sendButtonHero = document.getElementsByClassName("send-button-hero")[0];
+   inputHero.style.setProperty("--placeholder-color", searchBarHero.fontColor);
+sendButtonHero.innerHTML = `
+<svg width="22" height="22" viewBox="0 0 22 22" fill=${searchBarHero.accentColor} xmlns="http://www.w3.org/2000/svg">
+<path d="M10.4175 4.82227C10.7557 4.82227 11.0495 5.05692 11.1245 5.38672L11.6636 7.76074C11.8234 8.46347 12.3729 9.01208 13.0757 9.17188L15.4497 9.71191C15.7794 9.78692 16.0131 10.0799 16.0132 10.418C16.0132 10.7562 15.7795 11.05 15.4497 11.125L13.0757 11.6641C12.3729 11.8239 11.8234 12.3734 11.6636 13.0762L11.1245 15.4502C11.0495 15.78 10.7557 16.0137 10.4175 16.0137C10.0794 16.0136 9.78643 15.7799 9.71143 15.4502L9.17139 13.0762C9.01159 12.3734 8.46298 11.8239 7.76025 11.6641L5.38623 11.125C5.05643 11.05 4.82178 10.7562 4.82178 10.418C4.82189 10.0798 5.05651 9.78688 5.38623 9.71191L7.76025 9.17188C8.46284 9.01201 9.01152 8.46333 9.17139 7.76074L9.71143 5.38672C9.78639 5.057 10.0794 4.82238 10.4175 4.82227ZM10.4175 8.60742C10.0805 9.42815 9.42766 10.0809 8.60693 10.418C9.42733 10.7548 10.0803 11.4073 10.4175 12.2275C10.7545 11.4077 11.4072 10.755 12.2271 10.418C11.4069 10.0808 10.7543 9.42782 10.4175 8.60742Z" fill=${searchBarHero.accentColor} stroke=${searchBarHero.accentColor} stroke-width="0.15"/>
+<path d="M3.70312 3.70312C7.40706 -0.000780503 13.4123 -0.000781082 17.1162 3.70312C20.6476 7.23469 20.8102 12.8568 17.6074 16.583L20.8623 19.8379C21.1453 20.1208 21.1453 20.5794 20.8623 20.8623C20.5794 21.1453 20.1208 21.1453 19.8379 20.8623L16.583 17.6074C12.8568 20.8102 7.23469 20.6476 3.70312 17.1162C-0.000781082 13.4123 -0.000780503 7.40706 3.70312 3.70312ZM16.0918 4.72754C12.9537 1.58948 7.86557 1.58948 4.72754 4.72754C1.58948 7.86557 1.58948 12.9537 4.72754 16.0918C7.86558 19.2297 12.9538 19.2298 16.0918 16.0918C19.2298 12.9538 19.2297 7.86558 16.0918 4.72754Z" fill=${searchBarHero.accentColor} stroke=${searchBarHero.accentColor} stroke-width="0.15"/>
+</svg>`;
+}
+
+
+
+
 function updateDefaultButtonStyles() {
   button.style.backgroundColor = "#5848F7";
   if (bubbleIconUrl !== null) {
@@ -192,74 +280,201 @@ function openIframe() {
 button.addEventListener("click", openIframe);
 
 
-
-
-
-
 let sendBtn;
+
+// function injectChatInputBox() {
+//   const targetDiv = document.getElementById("skl_id_search");
+//   if (!targetDiv) return;
+
+//   if (window.innerWidth <= 500) {
+//     const existing = targetDiv.querySelector(".input-container");
+//     if (existing) existing.remove();
+
+//     // Inject search icon
+//     let searchIcon = targetDiv.querySelector(".search-icon-btn");
+//     if (!searchIcon) {
+//       searchIcon = document.createElement("button");
+//       searchIcon.className = "search-icon-btn";
+//       searchIcon.innerHTML = `
+//       <svg width="35" height="35" viewBox="0 0 28 28" fill="green" xmlns="http://www.w3.org/2000/svg">
+// <path fill-rule="evenodd" clip-rule="evenodd" d="M14.0722 6.16342C13.978 5.74951 13.61 5.45576 13.1855 5.45576C12.761 5.45576 12.393 5.74951 12.2988 6.16342L11.543 9.48724C11.3103 10.5106 10.5112 11.3097 9.48792 11.5423L6.16411 12.2982C5.7502 12.3923 5.45645 12.7603 5.45645 13.1848C5.45645 13.6093 5.7502 13.9774 6.16411 14.0715L9.48792 14.8273C10.5112 15.06 11.3103 15.8591 11.543 16.8824L12.2988 20.2062C12.393 20.6201 12.761 20.9139 13.1855 20.9139C13.61 20.9139 13.978 20.6201 14.0722 20.2062L14.828 16.8824C15.0607 15.8591 15.8597 15.06 16.8831 14.8273L20.2069 14.0715C20.6208 13.9774 20.9145 13.6093 20.9145 13.1848C20.9145 12.7603 20.6208 12.3923 20.2069 12.2982L16.8831 11.5423C15.8597 11.3097 15.0607 10.5106 14.828 9.48724L14.0722 6.16342ZM10.3528 13.1848C11.6838 12.7305 12.7312 11.6831 13.1855 10.3522C13.6398 11.6831 14.6872 12.7305 16.0181 13.1848C14.6872 13.6391 13.6398 14.6865 13.1855 16.0175C12.7312 14.6865 11.6838 13.6391 10.3528 13.1848Z" fill="#5848f7"/>
+// <path fill-rule="evenodd" clip-rule="evenodd" d="M22.4882 3.85835C17.3437 -1.28612 9.00285 -1.28612 3.85835 3.85835C-1.28612 9.00285 -1.28612 17.3437 3.85835 22.4882C8.78671 27.4165 16.6486 27.6236 21.8234 23.1093L26.4477 27.7337C26.8028 28.0888 27.3786 28.0888 27.7337 27.7337C28.0888 27.3786 28.0888 26.8028 27.7337 26.4477L23.1093 21.8234C27.6236 16.6486 27.4165 8.78671 22.4882 3.85835ZM5.14433 5.14433C9.57857 0.710037 16.768 0.710037 21.2022 5.14433C25.6365 9.57857 25.6365 16.768 21.2022 21.2022C16.768 25.6365 9.57857 25.6365 5.14433 21.2022C0.710037 16.768 0.710037 9.57857 5.14433 5.14433Z" fill="#5848f7"/>
+// </svg>
+//       `;
+//       searchIcon.style.background = "none";
+//       searchIcon.style.border = "none";
+//       searchIcon.style.cursor = "pointer";
+//       searchIcon.style.padding = "0";
+//       searchIcon.style.margin = "0 8px 0 0";
+//       searchIcon.style.display = "flex";
+//       searchIcon.style.alignItems = "center";
+//       searchIcon.style.justifyContent = "center";
+//       searchIcon.addEventListener("click", openIframe);
+//       targetDiv.appendChild(searchIcon);
+//     }
+//     return;
+//   }
+
+//   // ...existing code for desktop input box...
+//   const container = document.createElement("div");
+//   container.className = "input-container";
+
+//  container.style.borderRadius = `${searchBarNav.shape}px`;
+//   container.style.height = `${searchBarNav.size}px`;
+//   container.style.backgroundColor = searchBarNav.backgroundColor;
+//   container.style.fontFamily = searchBarNav.fontFamily;
+//   container.style.color = searchBarNav.fontColor;
+//   container.style.border = `1px solid ${searchBarNav.accentColor}`;
+//   container.style.padding = "0 14px";
+
+
+//   const input = document.createElement("input");
+//   input.type = "text";
+//   input.placeholder = searchBarNav.placeHolderText || "Ask Anything";
+
+//   function triggerIframe() {
+//     if (!input.value.trim()) return;
+//     openIframe(input.value.trim());
+//     if (iframeLoaded) {
+//       iframe.contentWindow.postMessage({ type: "setInput", value: input.value.trim() }, "*");
+//     } else {
+//       pendingInput = input.value.trim();
+//     }
+//     input.value = "";
+//   }
+
+//   input.addEventListener("keypress", (e) => {
+//     if (e.key === "Enter") {
+//       triggerIframe();
+//     }
+//   });
+
+//   sendBtn = document.createElement("button");
+//   sendBtn.className = "send-button";
+  
+// sendBtn.innerHTML = `
+// <svg width="22" height="22" viewBox="0 0 22 22" fill=${chatColors.AccentColor} xmlns="http://www.w3.org/2000/svg">
+// <path d="M10.4175 4.82227C10.7557 4.82227 11.0495 5.05692 11.1245 5.38672L11.6636 7.76074C11.8234 8.46347 12.3729 9.01208 13.0757 9.17188L15.4497 9.71191C15.7794 9.78692 16.0131 10.0799 16.0132 10.418C16.0132 10.7562 15.7795 11.05 15.4497 11.125L13.0757 11.6641C12.3729 11.8239 11.8234 12.3734 11.6636 13.0762L11.1245 15.4502C11.0495 15.78 10.7557 16.0137 10.4175 16.0137C10.0794 16.0136 9.78643 15.7799 9.71143 15.4502L9.17139 13.0762C9.01159 12.3734 8.46298 11.8239 7.76025 11.6641L5.38623 11.125C5.05643 11.05 4.82178 10.7562 4.82178 10.418C4.82189 10.0798 5.05651 9.78688 5.38623 9.71191L7.76025 9.17188C8.46284 9.01201 9.01152 8.46333 9.17139 7.76074L9.71143 5.38672C9.78639 5.057 10.0794 4.82238 10.4175 4.82227ZM10.4175 8.60742C10.0805 9.42815 9.42766 10.0809 8.60693 10.418C9.42733 10.7548 10.0803 11.4073 10.4175 12.2275C10.7545 11.4077 11.4072 10.755 12.2271 10.418C11.4069 10.0808 10.7543 9.42782 10.4175 8.60742Z" fill=${chatColors.AccentColor} stroke=${chatColors.AccentColor} stroke-width="0.15"/>
+// <path d="M3.70312 3.70312C7.40706 -0.000780503 13.4123 -0.000781082 17.1162 3.70312C20.6476 7.23469 20.8102 12.8568 17.6074 16.583L20.8623 19.8379C21.1453 20.1208 21.1453 20.5794 20.8623 20.8623C20.5794 21.1453 20.1208 21.1453 19.8379 20.8623L16.583 17.6074C12.8568 20.8102 7.23469 20.6476 3.70312 17.1162C-0.000781082 13.4123 -0.000780503 7.40706 3.70312 3.70312ZM16.0918 4.72754C12.9537 1.58948 7.86557 1.58948 4.72754 4.72754C1.58948 7.86557 1.58948 12.9537 4.72754 16.0918C7.86558 19.2297 12.9538 19.2298 16.0918 16.0918C19.2298 12.9538 19.2297 7.86558 16.0918 4.72754Z" fill=${chatColors.AccentColor} stroke=${chatColors.AccentColor} stroke-width="0.15"/>
+// </svg>
+// `;
+//   sendBtn.addEventListener("click", openIframe);
+
+//   container.appendChild(input);
+//   container.appendChild(sendBtn);
+//   targetDiv.appendChild(container);
+// }
+
+// Modify the injectChatInputBox function to handle both locations
 function injectChatInputBox() {
-  const targetDiv = document.getElementById("skl_id_search");
-  if (!targetDiv) return;
+  const targetDivs = [
+    document.getElementById("skl_id_search"),
+    document.getElementById("skl_id_search_hero_section")
+  ];
 
-  const container = document.createElement("div");
-  container.className = "input-container";
+  targetDivs.forEach(targetDiv => {
+    if (!targetDiv) return;
 
-   if (searchBarNav.shape === "sharp-edges") {
-    container.style.borderRadius = "0px";
-  } else {
-    container.style.borderRadius = "25px";
-  }
-  if (searchBarNav.size === "large") {
-    container.style.width = "500px";
-    container.style.padding = "12px 18px";
-  } else if (searchBarNav.size === "small") {
-    container.style.width = "250px";
-    container.style.padding = "4px 8px";
-  } else {
-    container.style.width = "400px";
-    container.style.padding = "8px 14px";
-  }
+    if (window.innerWidth <= 500) {
+      const existing = targetDiv.querySelector(".input-container");
+      if (existing) existing.remove();
 
-  const input = document.createElement("input");
-  input.type = "text";
-  input.placeholder = searchBarNav.placeHolderText || "Ask Anything";
+      // Inject search icon
+      let searchIcon = targetDiv.querySelector(".search-icon-btn");
+      if (!searchIcon) {
+        let isHeroSection = targetDiv.id === "skl_id_search_hero_section";
+        searchIcon = document.createElement("button");
+        searchIcon.className = isHeroSection? "search-icon-btn hero-section-btn" : "search-icon-btn search-icon-btn-nav";
+        searchIcon.innerHTML = `
+        <svg width="35" height="35" viewBox="0 0 28 28" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M14.0722 6.16342C13.978 5.74951 13.61 5.45576 13.1855 5.45576C12.761 5.45576 12.393 5.74951 12.2988 6.16342L11.543 9.48724C11.3103 10.5106 10.5112 11.3097 9.48792 11.5423L6.16411 12.2982C5.7502 12.3923 5.45645 12.7603 5.45645 13.1848C5.45645 13.6093 5.7502 13.9774 6.16411 14.0715L9.48792 14.8273C10.5112 15.06 11.3103 15.8591 11.543 16.8824L12.2988 20.2062C12.393 20.6201 12.761 20.9139 13.1855 20.9139C13.61 20.9139 13.978 20.6201 14.0722 20.2062L14.828 16.8824C15.0607 15.8591 15.8597 15.06 16.8831 14.8273L20.2069 14.0715C20.6208 13.9774 20.9145 13.6093 20.9145 13.1848C20.9145 12.7603 20.6208 12.3923 20.2069 12.2982L16.8831 11.5423C15.8597 11.3097 15.0607 10.5106 14.828 9.48724L14.0722 6.16342ZM10.3528 13.1848C11.6838 12.7305 12.7312 11.6831 13.1855 10.3522C13.6398 11.6831 14.6872 12.7305 16.0181 13.1848C14.6872 13.6391 13.6398 14.6865 13.1855 16.0175C12.7312 14.6865 11.6838 13.6391 10.3528 13.1848Z" fill="#5848f7"/>
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M22.4882 3.85835C17.3437 -1.28612 9.00285 -1.28612 3.85835 3.85835C-1.28612 9.00285 -1.28612 17.3437 3.85835 22.4882C8.78671 27.4165 16.6486 27.6236 21.8234 23.1093L26.4477 27.7337C26.8028 28.0888 27.3786 28.0888 27.7337 27.7337C28.0888 27.3786 28.0888 26.8028 27.7337 26.4477L23.1093 21.8234C27.6236 16.6486 27.4165 8.78671 22.4882 3.85835ZM5.14433 5.14433C9.57857 0.710037 16.768 0.710037 21.2022 5.14433C25.6365 9.57857 25.6365 16.768 21.2022 21.2022C16.768 25.6365 9.57857 25.6365 5.14433 21.2022C0.710037 16.768 0.710037 9.57857 5.14433 5.14433Z" fill="#5848f7"/>
+        </svg>
+        `;
+        searchIcon.style.background = "none";
+        searchIcon.style.border = "none";
+        searchIcon.style.cursor = "pointer";
+        searchIcon.style.padding = "0";
+        searchIcon.style.margin = "0 8px 0 0";
+        searchIcon.style.display = "flex";
+        searchIcon.style.alignItems = "center";
+        searchIcon.style.justifyContent = "center";
+        searchIcon.addEventListener("click", openIframe);
+        targetDiv.appendChild(searchIcon);
+      }
+      return;
+    }
+
+    // Create container for input box
+    const container = document.createElement("div");
+    container.className = targetDiv.id === "skl_id_search_hero_section" ? 
+      "input-container hero-input" : "input-container";
+
+    container.style.borderRadius = `${searchBarNav.shape}px`;
+    container.style.height = `${searchBarNav.size}px`;
+    container.style.backgroundColor = searchBarNav.backgroundColor;
+    container.style.fontFamily = searchBarNav.fontFamily;
+    container.style.color = searchBarNav.fontColor;
+    container.style.border = `1px solid ${searchBarNav.accentColor}`;
+    container.style.padding = "0 14px";
+
+    const input = document.createElement("input");
+    input.type = "text";
+    input.placeholder = searchBarNav.placeHolderText || "Ask Anything";
 
     function triggerIframe() {
-    if (!input.value.trim()) return; // don't trigger empty
-    openIframe(input.value.trim());
-    // input.value = ""; // clear input after submit
+      if (!input.value.trim()) return;
+      openIframe(input.value.trim());
+      if (iframeLoaded) {
+        iframe.contentWindow.postMessage({ type: "setInput", value: input.value.trim() }, "*");
+      } else {
+        pendingInput = input.value.trim();
+      }
+      input.value = "";
+    }
 
-     if (iframeLoaded) {
-    iframe.contentWindow.postMessage({ type: "setInput", value: input.value.trim() }, "*");
-  } else {
-    pendingInput = input.value.trim();
-  }
-  input.value = "";
-  }
+    input.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") {
+        triggerIframe();
+      }
+    });
 
-  input.addEventListener("keypress", (e) => {
-    if (e.key === "Enter") {
-      triggerIframe();
+    const sendBtn = document.createElement("button");
+sendBtn.className = targetDiv.id === "skl_id_search_hero_section"
+  ? "send-button send-button-hero"
+  : "send-button";
+    sendBtn.innerHTML = `
+      <svg width="22" height="22" viewBox="0 0 22 22" fill=${chatColors.AccentColor} xmlns="http://www.w3.org/2000/svg">
+        <path d="M10.4175 4.82227C10.7557 4.82227 11.0495 5.05692 11.1245 5.38672L11.6636 7.76074C11.8234 8.46347 12.3729 9.01208 13.0757 9.17188L15.4497 9.71191C15.7794 9.78692 16.0131 10.0799 16.0132 10.418C16.0132 10.7562 15.7795 11.05 15.4497 11.125L13.0757 11.6641C12.3729 11.8239 11.8234 12.3734 11.6636 13.0762L11.1245 15.4502C11.0495 15.78 10.7557 16.0137 10.4175 16.0137C10.0794 16.0136 9.78643 15.7799 9.71143 15.4502L9.17139 13.0762C9.01159 12.3734 8.46298 11.8239 7.76025 11.6641L5.38623 11.125C5.05643 11.05 4.82178 10.7562 4.82178 10.418C4.82189 10.0798 5.05651 9.78688 5.38623 9.71191L7.76025 9.17188C8.46284 9.01201 9.01152 8.46333 9.17139 7.76074L9.71143 5.38672C9.78639 5.057 10.0794 4.82238 10.4175 4.82227ZM10.4175 8.60742C10.0805 9.42815 9.42766 10.0809 8.60693 10.418C9.42733 10.7548 10.0803 11.4073 10.4175 12.2275C10.7545 11.4077 11.4072 10.755 12.2271 10.418C11.4069 10.0808 10.7543 9.42782 10.4175 8.60742Z" fill=${chatColors.AccentColor} stroke=${chatColors.AccentColor} stroke-width="0.15"/>
+        <path d="M3.70312 3.70312C7.40706 -0.000780503 13.4123 -0.000781082 17.1162 3.70312C20.6476 7.23469 20.8102 12.8568 17.6074 16.583L20.8623 19.8379C21.1453 20.1208 21.1453 20.5794 20.8623 20.8623C20.5794 21.1453 20.1208 21.1453 19.8379 20.8623L16.583 17.6074C12.8568 20.8102 7.23469 20.6476 3.70312 17.1162C-0.000781082 13.4123 -0.000780503 7.40706 3.70312 3.70312ZM16.0918 4.72754C12.9537 1.58948 7.86557 1.58948 4.72754 4.72754C1.58948 7.86557 1.58948 12.9537 4.72754 16.0918C7.86558 19.2297 12.9538 19.2298 16.0918 16.0918C19.2298 12.9538 19.2297 7.86558 16.0918 4.72754Z" fill=${chatColors.AccentColor} stroke=${chatColors.AccentColor} stroke-width="0.15"/>
+      </svg>
+    `;
+    sendBtn.addEventListener("click", triggerIframe);
+
+    container.appendChild(input);
+    container.appendChild(sendBtn);
+    
+    // Remove existing input container if present
+    const existing = targetDiv.querySelector(".input-container");
+    if (existing) existing.remove();
+    
+    targetDiv.appendChild(container);
+  });
+}
+
+function observeChatInput() {
+  const observer = new MutationObserver(() => {
+    const targetDiv = document.getElementById("skl_id_search");
+    if (targetDiv && !targetDiv.querySelector(".input-container")) {
+      injectChatInputBox();
     }
   });
 
-  sendBtn = document.createElement("button");
-  sendBtn.className = "send-button";
-
-  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-  svg.setAttribute("viewBox", "0 0 24 24");
-  const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-  path.setAttribute("d", "M2 21l21-9L2 3v7l15 2-15 2z");
-  svg.appendChild(path);
-  sendBtn.appendChild(svg);
-
-  sendBtn.addEventListener("click", openIframe);
-
-  container.appendChild(input);
-  container.appendChild(sendBtn);
-  targetDiv.appendChild(container);
+  observer.observe(document.body, { childList: true, subtree: true });
+  injectChatInputBox();
 }
-injectChatInputBox();
+
+observeChatInput();
 
 
 var style = document.createElement("style");
@@ -300,6 +515,16 @@ style.innerHTML = `
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
   transition: transform 0.25s linear;
   outline: none;
+}
+  .search-icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  margin: 0 8px 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .open-iframe-btn img {
   width: 100%;
@@ -364,22 +589,24 @@ style.innerHTML = `
   outline: none;
   flex: 1;
   font-size: 14px;
-  color: #333;
+  font-family:Manrope, sans-serif;
+  color: #77757B;
 }
 .send-button {
-  background-color: #5848f7;
-  border: none;
-  border-radius: 50%;
-  width: 28px;
-  height: 28px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
+    background: none;
+    border: none;
+    cursor: pointer;
 }
 .send-button svg {
-  width: 14px;
-  height: 14px;
+  width: 20px;
+  height: 20px;
   fill: white;
+}
+  
+.input-container input::placeholder {
+  color: var(--placeholder-color, #888);
+}
+.hero-input input::placeholder {
+  color: var(--placeholder-color, #888);
 }`;
 document.head.appendChild(style);
