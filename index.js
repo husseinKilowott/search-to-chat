@@ -21,10 +21,13 @@ let searchBarHero = {
   size: 40,  
   placeHolderText: "Ask me anything...", 
   backgroundColor:"#ffffff",
-  fontColor: "#000000"
+  fontColor: "#000000",
+  starterQuestionsHero: false,
 };
 
 let bubbleIconUrl = null;
+let starterQuestions = [];
+
 async function fetchColors() {
   try {
     let baseUrl;
@@ -66,6 +69,7 @@ async function fetchColors() {
         searchBarHero.backgroundColor = colors.data.backgroundColorHero || searchBarHero.backgroundColor;
         searchBarHero.accentColor = colors.data.accentColorHero || searchBarHero.accentColor;
         searchBarHero.fontColor = colors.data.fontColorHero || searchBarHero.fontColor;
+        searchBarHero.starterQuestionsHero = colors.data.starterQuestionsHero || false;
 
     appendButton();
     updateButtonStyles();
@@ -79,7 +83,45 @@ async function fetchColors() {
     return null; // Fallback to default colors if API call fails
   }
 }
-fetchColors();
+
+async function getStarterQuestions() {
+  try {
+    let baseUrl;
+    switch (window.chatConfig.env) {
+      case "skillbuilder":
+      case "skl":
+        baseUrl = "https://api.skillbuilder.io";
+        break;
+      case "staging":
+        baseUrl = "https://staging-api.skillbuilder.io";
+        break;
+      default:
+        baseUrl = "https://dev-api.skillbuilder.io";
+    }
+    const detailsResponse = await fetch(
+      `${baseUrl}/api/v1/skilly/${window.chatConfig.chatId}/details`
+    );
+    if (!detailsResponse.ok) {
+      throw new Error(`Failed to fetch details: ${detailsResponse.statusText}`);
+    }
+    const details = await detailsResponse.json();
+    starterQuestions = details.data?.starterQuestions || [];
+    // Assuming starter questions are in details.data.starterQuestions
+    return details.data?.starterQuestions || [];
+  } catch (error) {
+    console.error("Error fetching starter questions:", error);
+    return [];
+  }
+}
+
+
+async function main() {
+  await fetchColors();
+  starterQuestions = await getStarterQuestions();
+  renderStarterQuestions(starterQuestions);
+}
+
+main();
 var button = document.createElement("button");
 button.classList.add("open-iframe-btn");
 function updateButtonStyles() {
@@ -461,6 +503,80 @@ sendBtn.className = targetDiv.id === "skl_id_search_hero_section"
     targetDiv.appendChild(container);
   });
 }
+
+function renderStarterQuestions(questions) {
+  fetchColors();
+  if(!searchBarHero.starterQuestionsHero) return;
+  const targetDiv = document.getElementById("skl_id_search_hero_section");
+  if (!targetDiv) return;
+
+  // Remove existing starter questions container if present
+  let existing = targetDiv.querySelector(".starter-questions-container");
+  if (existing) existing.remove();
+
+  // Create the container
+  const container = document.createElement("div");
+  container.className = "starter-questions-container";
+
+  // Add pills for each question
+  questions.forEach(q => {
+    const pill = document.createElement("button");
+    pill.className = "starter-question-pill";
+    pill.textContent = q;
+     pill.onclick = () => {
+    const input = targetDiv.querySelector("input");
+    if (input) {
+      input.value = q;
+      input.focus();
+      // Directly trigger the chat message
+      openIframe(q);
+      if (iframeLoaded) {
+        iframe.contentWindow.postMessage({ type: "setInput", value: q }, "*");
+      } else {
+        pendingInput = q;
+      }
+      input.value = "";
+    }
+  };
+    container.appendChild(pill);
+  });
+
+  // Insert after the input container
+  const inputContainer = targetDiv.querySelector(".input-container");
+  if (inputContainer) {
+    inputContainer.insertAdjacentElement("afterend", container);
+  } else {
+    targetDiv.appendChild(container);
+  }
+}
+
+// Add pill styles once (near your other <style> code)
+var pillStyle = document.createElement("style");
+pillStyle.innerHTML = `
+.starter-questions-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+.starter-question-pill {
+  background: #fff;
+  color: #79777D;
+  border: none;
+  border-radius: 16px;
+  padding: 5.5px 10px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  font-family: inherit;
+}
+.starter-question-pill:hover {
+  background: #f7f7f8;
+  color: #79777D;
+}
+`;
+document.head.appendChild(pillStyle);
 
 function observeChatInput() {
   const observer = new MutationObserver(() => {
