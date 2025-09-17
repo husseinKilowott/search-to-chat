@@ -506,7 +506,7 @@ sendBtn.className = targetDiv.id === "skl_id_search_hero_section"
 
 function renderStarterQuestions(questions) {
   fetchColors();
-  if(!searchBarHero.starterQuestionsHero) return;
+  if (!searchBarHero.starterQuestionsHero) return;
   const targetDiv = document.getElementById("skl_id_search_hero_section");
   if (!targetDiv) return;
 
@@ -522,22 +522,36 @@ function renderStarterQuestions(questions) {
   questions.forEach(q => {
     const pill = document.createElement("button");
     pill.className = "starter-question-pill";
-    pill.textContent = q;
-     pill.onclick = () => {
-    const input = targetDiv.querySelector("input");
-    if (input) {
-      input.value = q;
-      input.focus();
-      // Directly trigger the chat message
-      openIframe(q);
-      if (iframeLoaded) {
-        iframe.contentWindow.postMessage({ type: "setInput", value: q }, "*");
-      } else {
-        pendingInput = q;
+
+    // Create a span to hold the icon and text
+    const pillContent = document.createElement("span");
+    pillContent.className = "starter-pill-content";
+
+    // SVG icon
+    pillContent.innerHTML = `
+      <svg width="10" height="10" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle;">
+        <path d="M4.545 4.5C4.66255 4.16583 4.89458 3.88405 5.19998 3.70457C5.50538 3.52508 5.86445 3.45947 6.21359 3.51936C6.56273 3.57924 6.87941 3.76076 7.10754 4.03176C7.33567 4.30277 7.46053 4.64576 7.46 5C7.46 6 5.96 6.5 5.96 6.5M6 8.5H6.005M11 6C11 8.76142 8.76142 11 6 11C3.23858 11 1 8.76142 1 6C1 3.23858 3.23858 1 6 1C8.76142 1 11 3.23858 11 6Z" stroke="#77757B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span class="starter-pill-text">${q}</span>
+    `;
+
+    pill.appendChild(pillContent);
+
+    pill.onclick = () => {
+      const input = targetDiv.querySelector("input");
+      if (input) {
+        input.value = q;
+        input.focus();
+        // Directly trigger the chat message
+        openIframe(q);
+        if (iframeLoaded) {
+          iframe.contentWindow.postMessage({ type: "setInput", value: q }, "*");
+        } else {
+          pendingInput = q;
+        }
+        input.value = "";
       }
-      input.value = "";
-    }
-  };
+    };
     container.appendChild(pill);
   });
 
@@ -550,7 +564,6 @@ function renderStarterQuestions(questions) {
   }
 }
 
-// Add pill styles once (near your other <style> code)
 var pillStyle = document.createElement("style");
 pillStyle.innerHTML = `
 .starter-questions-container {
@@ -569,11 +582,21 @@ pillStyle.innerHTML = `
   font-weight: 500;
   cursor: pointer;
   transition: background 0.2s, color 0.2s;
-  font-family: inherit;
+  font-family: "Manrope", sans-serif;
+  display: flex;
+  align-items: center;
 }
 .starter-question-pill:hover {
   background: #f7f7f8;
   color: #79777D;
+}
+.starter-pill-content {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.starter-pill-text {
+  display: inline-block;
 }
 `;
 document.head.appendChild(pillStyle);
