@@ -594,7 +594,6 @@ style.innerHTML = `
   justify-content: center;
   align-items: center;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-  transition: transform 0.25s linear;
   outline: none;
 }
 .search-icon-btn {
@@ -624,7 +623,6 @@ style.innerHTML = `
   overflow: hidden;
   box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
   z-index: 9999999;
-  transition: width 300ms ease;
 }
 .iframe-container.wide {
   width: calc(100% - 40px);
