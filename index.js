@@ -395,8 +395,10 @@ function setupIframeOnLoad() {
     iframeContainer.appendChild(maximizeBtn); // add before iframe
     iframeContainer.appendChild(iframe);
     
-    // toggle logic
-    let isWide = false;
+    // toggle logic - default to wide mode
+    let isWide = true;
+    iframeContainer.classList.add("wide"); // Ensure wide class is applied by default
+    maximizeBtn.innerHTML = isWide ? minIcon : maxIcon;
     maximizeBtn.addEventListener("click", () => {
       isWide = !isWide;
       maximizeBtn.innerHTML = isWide ? minIcon : maxIcon;
