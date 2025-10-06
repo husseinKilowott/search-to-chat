@@ -402,6 +402,7 @@ function setupIframeOnLoad() {
       isWide = !isWide;
       maximizeBtn.innerHTML = isWide ? minIcon : maxIcon;
       iframeContainer.classList.toggle("wide", isWide);
+      checkParentWidth()
     });
 
     document.body.appendChild(iframeContainer);
