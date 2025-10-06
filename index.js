@@ -24,6 +24,8 @@ let searchBarHero = {
   fontColor: "#000000",
 };
 
+let chatBubbleBackgroundColorEnabled = true;
+
 // Fetch colors from API
 let bubbleIconUrl = null;
 async function fetchColors() {
@@ -55,6 +57,7 @@ async function fetchColors() {
       chatColors.ChatBubbleBackgroundColor;
     chatColors.FontColor = colors.data.fontColor || "#FFFFFF";
     bubbleIconUrl = colors.data.bubbleIcon || null;
+    chatBubbleBackgroundColorEnabled = colors.data.chatBubbleBackgroundColorEnabled ?? chatBubbleBackgroundColorEnabled;
 
     searchBarNav.shape = colors.data.shapeNav;
     searchBarNav.size = colors.data.sizeNav;
@@ -97,7 +100,15 @@ fetchColors();
 var button = document.createElement("button");
 button.classList.add("open-iframe-btn");
 function updateButtonStyles() {
-  button.style.backgroundColor = chatColors.ChatBubbleBackgroundColor;
+  if (chatBubbleBackgroundColorEnabled) {
+    // Normal styling with background color and shadow
+    button.style.backgroundColor = chatColors.ChatBubbleBackgroundColor;
+    button.style.boxShadow = "0px 4px 10px rgba(0, 0, 0, 0.2)";
+  } else {
+    // Transparent background and no shadow
+    button.style.backgroundColor = "transparent";
+    button.style.boxShadow = "none";
+  }
   if (bubbleIconUrl !== null) {
     button.innerHTML = `<img src="${bubbleIconUrl}" alt="chat-icon" />`;
   } else {
@@ -174,8 +185,14 @@ function updateInputBoxStyles() {
 
 // Update default button styles
 function updateDefaultButtonStyles() {
-  button.style.backgroundColor =
-    chatColors.ChatBubbleBackgroundColor || "#5848F7";
+  if (chatBubbleBackgroundColorEnabled) {
+    button.style.backgroundColor =
+      chatColors.ChatBubbleBackgroundColor || "#5848F7";
+    button.style.boxShadow = "0px 4px 10px rgba(0, 0, 0, 0.2)";
+  } else {
+    button.style.backgroundColor = "transparent";
+    button.style.boxShadow = "none";
+  }
   if (bubbleIconUrl !== null) {
     button.innerHTML = `<img src="${bubbleIconUrl}" alt="chat-icon" />`;
   } else {
