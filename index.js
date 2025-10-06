@@ -258,14 +258,14 @@ function checkParentWidth() {
 
     if (parentWidth <= 992) {
       console.log("Mobile view detected");
-      const resourceBtn = document.querySelector(".OpenResourcesBtn");
-      console.log('resourceBtn', resourceBtn);
-      if (resourceBtn) {
-        resourceBtn.style.backgroundColor = "red";
-        resourceBtn.style.color = "#fff"; // optional if you want text visible
-      }
     } else {
       console.log("Desktop view detected");
+    }
+    const resourceBtn = document.querySelector(".OpenResourcesBtn");
+    console.log('resourceBtn', resourceBtn);
+    if (resourceBtn) {
+      resourceBtn.style.backgroundColor = "red";
+      resourceBtn.style.color = "#fff"; // optional if you want text visible
     }
   } catch (e) {
     console.warn("Error checking width:", e);
