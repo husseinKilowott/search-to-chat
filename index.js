@@ -258,7 +258,6 @@ function checkParentWidth() {
 
     if (parentWidth <= 992) {
       console.log("Mobile view detected");
-
       const resourceBtn = document.querySelector(".OpenResourcesBtn");
       console.log('resourceBtn', resourceBtn);
       if (resourceBtn) {
@@ -274,8 +273,8 @@ function checkParentWidth() {
 }
 
 // Run on load + resize
-// window.addEventListener("load", checkParentWidth);
-// window.addEventListener("resize", checkParentWidth);
+window.addEventListener("load", checkParentWidth);
+window.addEventListener("resize", checkParentWidth);
 
 // Iframe setup
 let iframeLoaded = false;
@@ -710,5 +709,11 @@ style.innerHTML = `
 }
 .hero-input input::placeholder {
   color: var(--placeholder-color, #888);
+}
+
+/* Style for OpenResourcesBtn */
+.OpenResourcesBtn {
+  background-color: red !important;
+  color: #fff !important;
 }`;
 document.head.appendChild(style);
