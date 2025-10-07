@@ -104,10 +104,12 @@ function updateButtonStyles() {
     // Normal styling with background color and shadow
     button.style.backgroundColor = chatColors.ChatBubbleBackgroundColor;
     button.style.boxShadow = "0px 4px 10px rgba(0, 0, 0, 0.2)";
+    button.style.borderRadius = "50%";
   } else {
     // Transparent background and no shadow
     button.style.backgroundColor = "transparent";
     button.style.boxShadow = "none";
+    button.style.borderRadius = "0";
   }
   if (bubbleIconUrl !== null) {
     button.innerHTML = `<img src="${bubbleIconUrl}" alt="chat-icon" />`;
@@ -189,9 +191,11 @@ function updateDefaultButtonStyles() {
     button.style.backgroundColor =
       chatColors.ChatBubbleBackgroundColor || "#5848F7";
     button.style.boxShadow = "0px 4px 10px rgba(0, 0, 0, 0.2)";
+    button.style.borderRadius = "50%";
   } else {
     button.style.backgroundColor = "transparent";
     button.style.boxShadow = "none";
+    button.style.borderRadius = "0";
   }
   if (bubbleIconUrl !== null) {
     button.innerHTML = `<img src="${bubbleIconUrl}" alt="chat-icon" />`;
@@ -599,7 +603,6 @@ style.innerHTML = `
   width: 55px;
   height: 55px;
   font-size: 24px;
-  border-radius: 50%;
   border: none;
   cursor: pointer;
   z-index: 10000;
