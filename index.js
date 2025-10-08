@@ -641,6 +641,7 @@ style.innerHTML = `
   overflow: hidden;
   box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
   z-index: 9999999;
+  background-color: #fff;
 }
 .iframe-container.wide {
   width: calc(100% - 40px);
