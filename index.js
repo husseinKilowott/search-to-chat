@@ -272,56 +272,17 @@ function getCookie(name) {
 // Get previous session ID from cookie
 const prevSessionId = getCookie("__prevSessionId");
 
-// function checkParentWidth() {
-//   try {
-//     // use iframe’s document width
-//     const parentWidth = window.innerWidth;  
-
-//     if (parentWidth <= 992) {
-//       console.log("Mobile view detected");
-//     } else {
-//       console.log("Desktop view detected");
-//     }
-//     const resourceBtn = document.querySelector(".OpenResourcesBtn");
-//     console.log('resourceBtn', resourceBtn);
-//     if (resourceBtn) {
-//       resourceBtn.style.backgroundColor = "red";
-//       resourceBtn.style.color = "#fff"; // optional if you want text visible
-//     }
-//   } catch (e) {
-//     console.warn("Error checking width:", e);
-//   }
-// }
-
 function checkParentWidth() {
   try {
+    // use iframe’s document width
     const parentWidth = window.innerWidth;  
-    let viewType = "desktop";
 
     if (parentWidth <= 992) {
       console.log("Mobile view detected");
-      viewType = "mobile";
     } else {
       console.log("Desktop view detected");
     }
-
-    // Find the iframe element (update selector if needed)
-    const iframe = document.querySelector("iframe#chatbot-iframe");
-    if (iframe) {
-      const currentSrc = new URL(iframe.src, window.location.origin);
-
-      // Remove any existing view param before adding new one
-      currentSrc.searchParams.set("view", viewType);
-
-      // Update iframe src only if it changed (prevents reload loops)
-      if (iframe.src !== currentSrc.toString()) {
-        iframe.src = currentSrc.toString();
-        console.log(`Updated iframe URL with view=${viewType}`);
-      }
-    } else {
-      console.warn("Iframe element not found");
-    }
-
+    return parentWidth;
   } catch (e) {
     console.warn("Error checking width:", e);
   }
@@ -420,6 +381,8 @@ function setupIframeOnLoad() {
       setupIframeMutationObserver();
     });
 
+    const parentWidth = checkParentWidth();
+    console.log('parentWidth', parentWidth)
     if (window.chatConfig.env == "dev") {
       iframe.src = prevSessionId
         ? `http://localhost:3000/external-ai-chat/${window.chatConfig.chatId}?prevSessionId=${prevSessionId}&fromIframe=1`
