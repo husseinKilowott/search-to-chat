@@ -387,19 +387,19 @@ function setupIframeOnLoad() {
 
     if (window.chatConfig.env == "dev") {
       iframe.src = prevSessionId
-        ? `http://localhost:3000/external-ai-chat/${window.chatConfig.chatId}?prevSessionId=${prevSessionId}`
-        : `http://localhost:3000/external-ai-chat/${window.chatConfig.chatId}`;
+        ? `http://localhost:3000/external-ai-chat/${window.chatConfig.chatId}?prevSessionId=${prevSessionId}&fromIframe=1`
+        : `http://localhost:3000/external-ai-chat/${window.chatConfig.chatId}?fromIframe=1`;
     } else if (
       window.chatConfig.env == "skillbuilder" ||
       window.chatConfig.env == "skl"
     ) {
       iframe.src = prevSessionId
-        ? `https://skillbuilder.io/external-ai-chat/${window.chatConfig.chatId}?prevSessionId=${prevSessionId}`
-        : `https://skillbuilder.io/external-ai-chat/${window.chatConfig.chatId}`;
+        ? `https://skillbuilder.io/external-ai-chat/${window.chatConfig.chatId}?prevSessionId=${prevSessionId}&fromIframe=1`
+        : `https://skillbuilder.io/external-ai-chat/${window.chatConfig.chatId}?fromIframe=1`;
     } else {
       iframe.src = prevSessionId
-        ? `https://${window.chatConfig.env}.skillbuilder.io/external-ai-chat/${window.chatConfig.chatId}?prevSessionId=${prevSessionId}`
-        : `https://${window.chatConfig.env}.skillbuilder.io/external-ai-chat/${window.chatConfig.chatId}`;
+        ? `https://${window.chatConfig.env}.skillbuilder.io/external-ai-chat/${window.chatConfig.chatId}?prevSessionId=${prevSessionId}&fromIframe=1`
+        : `https://${window.chatConfig.env}.skillbuilder.io/external-ai-chat/${window.chatConfig.chatId}?fromIframe=1`;
     }
 
     closeIframeButton = document.createElement("button");
