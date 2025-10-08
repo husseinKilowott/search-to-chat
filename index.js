@@ -272,26 +272,61 @@ function getCookie(name) {
 // Get previous session ID from cookie
 const prevSessionId = getCookie("__prevSessionId");
 
+// function checkParentWidth() {
+//   try {
+//     // use iframe’s document width
+//     const parentWidth = window.innerWidth;  
+
+//     if (parentWidth <= 992) {
+//       console.log("Mobile view detected");
+//     } else {
+//       console.log("Desktop view detected");
+//     }
+//     const resourceBtn = document.querySelector(".OpenResourcesBtn");
+//     console.log('resourceBtn', resourceBtn);
+//     if (resourceBtn) {
+//       resourceBtn.style.backgroundColor = "red";
+//       resourceBtn.style.color = "#fff"; // optional if you want text visible
+//     }
+//   } catch (e) {
+//     console.warn("Error checking width:", e);
+//   }
+// }
+
 function checkParentWidth() {
   try {
-    // use iframe’s document width
     const parentWidth = window.innerWidth;  
+    let viewType = "desktop";
 
     if (parentWidth <= 992) {
       console.log("Mobile view detected");
+      viewType = "mobile";
     } else {
       console.log("Desktop view detected");
     }
-    const resourceBtn = document.querySelector(".OpenResourcesBtn");
-    console.log('resourceBtn', resourceBtn);
-    if (resourceBtn) {
-      resourceBtn.style.backgroundColor = "red";
-      resourceBtn.style.color = "#fff"; // optional if you want text visible
+
+    // Find the iframe element (update selector if needed)
+    const iframe = document.querySelector("iframe#chatbot-iframe");
+    if (iframe) {
+      const currentSrc = new URL(iframe.src, window.location.origin);
+
+      // Remove any existing view param before adding new one
+      currentSrc.searchParams.set("view", viewType);
+
+      // Update iframe src only if it changed (prevents reload loops)
+      if (iframe.src !== currentSrc.toString()) {
+        iframe.src = currentSrc.toString();
+        console.log(`Updated iframe URL with view=${viewType}`);
+      }
+    } else {
+      console.warn("Iframe element not found");
     }
+
   } catch (e) {
     console.warn("Error checking width:", e);
   }
 }
+
 
 // Run on load + resize
 window.addEventListener("load", checkParentWidth);
