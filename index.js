@@ -86,7 +86,7 @@ async function fetchColors() {
     updateMobileButtonStyles();
     return colors;
   } catch (error) {
-    console.error("Error fetching colors:", error);
+    // console.error("Error fetching colors:", error);
     appendButton();
     updateDefaultButtonStyles();
     return null; // Fallback to default colors if API call fails
@@ -109,7 +109,7 @@ function updateButtonStyles() {
     // Transparent background and no shadow
     button.style.backgroundColor = "transparent";
     button.style.boxShadow = "none";
-    button.style.borderRadius = "0";
+    button.style.borderRadius = "none";
   }
   if (bubbleIconUrl !== null) {
     button.innerHTML = `<img src="${bubbleIconUrl}" alt="chat-icon" />`;
@@ -130,7 +130,7 @@ function updateMobileButtonStyles() {
 
   let searchNavButton = document.querySelector(".search-icon-btn-nav");
 
-  console.log("searchNavButton", searchNavButton);
+  // console.log("searchNavButton", searchNavButton);
   searchNavButton.innerHTML = `
 <svg width="40" height="40" viewBox="0 0 22 22" fill=${searchBarNav.accentColor} xmlns="http://www.w3.org/2000/svg">
 <path d="M10.4175 4.82227C10.7557 4.82227 11.0495 5.05692 11.1245 5.38672L11.6636 7.76074C11.8234 8.46347 12.3729 9.01208 13.0757 9.17188L15.4497 9.71191C15.7794 9.78692 16.0131 10.0799 16.0132 10.418C16.0132 10.7562 15.7795 11.05 15.4497 11.125L13.0757 11.6641C12.3729 11.8239 11.8234 12.3734 11.6636 13.0762L11.1245 15.4502C11.0495 15.78 10.7557 16.0137 10.4175 16.0137C10.0794 16.0136 9.78643 15.7799 9.71143 15.4502L9.17139 13.0762C9.01159 12.3734 8.46298 11.8239 7.76025 11.6641L5.38623 11.125C5.05643 11.05 4.82178 10.7562 4.82178 10.418C4.82189 10.0798 5.05651 9.78688 5.38623 9.71191L7.76025 9.17188C8.46284 9.01201 9.01152 8.46333 9.17139 7.76074L9.71143 5.38672C9.78639 5.057 10.0794 4.82238 10.4175 4.82227ZM10.4175 8.60742C10.0805 9.42815 9.42766 10.0809 8.60693 10.418C9.42733 10.7548 10.0803 11.4073 10.4175 12.2275C10.7545 11.4077 11.4072 10.755 12.2271 10.418C11.4069 10.0808 10.7543 9.42782 10.4175 8.60742Z" fill=${searchBarNav.accentColor} stroke=${searchBarNav.accentColor} stroke-width="0.15"/>
@@ -187,7 +187,7 @@ function updateInputBoxStyles() {
 
 // Update default button styles
 function updateDefaultButtonStyles() {
-  if (chatBubbleBackgroundColorEnabled) {
+    if (chatBubbleBackgroundColorEnabled) {
     button.style.backgroundColor =
       chatColors.ChatBubbleBackgroundColor || "#5848F7";
     button.style.boxShadow = "0px 4px 10px rgba(0, 0, 0, 0.2)";
@@ -195,7 +195,7 @@ function updateDefaultButtonStyles() {
   } else {
     button.style.backgroundColor = "transparent";
     button.style.boxShadow = "none";
-    button.style.borderRadius = "0";
+    button.style.borderRadius = "none";
   }
   if (bubbleIconUrl !== null) {
     button.innerHTML = `<img src="${bubbleIconUrl}" alt="chat-icon" />`;
@@ -278,16 +278,15 @@ function checkParentWidth() {
     const parentWidth = window.innerWidth;  
 
     if (parentWidth <= 992) {
-      console.log("Mobile view detected");
+      // console.log("Mobile view detected");
     } else {
-      console.log("Desktop view detected");
+      // console.log("Desktop view detected");
     }
     return parentWidth;
   } catch (e) {
-    console.warn("Error checking width:", e);
+    // console.warn("Error checking width:", e);
   }
 }
-
 
 // Run on load + resize
 window.addEventListener("load", checkParentWidth);
@@ -304,18 +303,18 @@ function setupIframeMutationObserver() {
   try {
     // Check if we can access iframe content (same-origin)
     if (iframe.contentDocument) {
-      console.log("Setting up iframe content mutation observer");
+      // console.log("Setting up iframe content mutation observer");
       
       const observer = new MutationObserver((mutations) => {
         mutations.forEach((mutation) => {
           if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
-            console.log("Iframe content changed - new nodes added:", mutation.addedNodes);
+            // console.log("Iframe content changed - new nodes added:", mutation.addedNodes);
           }
           if (mutation.type === 'attributes') {
-            console.log("Iframe content changed - attribute modified:", mutation.attributeName);
+            // console.log("Iframe content changed - attribute modified:", mutation.attributeName);
           }
           if (mutation.type === 'characterData') {
-            console.log("Iframe content changed - text content modified");
+            // console.log("Iframe content changed - text content modified");
           }
         });
       });
@@ -328,27 +327,27 @@ function setupIframeMutationObserver() {
         characterData: true
       });
       
-      console.log("Iframe mutation observer started successfully");
+      // console.log("Iframe mutation observer started successfully");
     } else {
-      console.log("Cannot access iframe content (cross-origin) - using postMessage listener instead");
+      // console.log("Cannot access iframe content (cross-origin) - using postMessage listener instead");
       
       // Alternative: Listen for postMessage events from iframe
       window.addEventListener('message', (event) => {
         // Verify origin if needed
         if (event.source === iframe.contentWindow) {
-          console.log("Iframe content communicated via postMessage:", event.data);
+          // console.log("Iframe content communicated via postMessage:", event.data);
           checkParentWidth()
         }
       });
     }
   } catch (error) {
-    console.warn("Error setting up iframe mutation observer:", error);
-    console.log("Falling back to postMessage listener for cross-origin iframe");
+    // console.warn("Error setting up iframe mutation observer:", error);
+    // console.log("Falling back to postMessage listener for cross-origin iframe");
     
     // Fallback: Listen for postMessage events
     window.addEventListener('message', (event) => {
       if (event.source === iframe.contentWindow) {
-        console.log("Iframe content change detected via postMessage:", event.data);
+        // console.log("Iframe content change detected via postMessage:", event.data);
       }
     });
   }
@@ -382,7 +381,7 @@ function setupIframeOnLoad() {
     });
 
     const parentWidth = checkParentWidth() ?? 0;
-    console.log('parentWidth', parentWidth)
+    // console.log('parentWidth', parentWidth);
     if (window.chatConfig.env == "dev") {
       iframe.src = prevSessionId
         ? `http://localhost:3000/external-ai-chat/${window.chatConfig.chatId}?prevSessionId=${prevSessionId}&fromIframeParentWidth=${parentWidth}`
