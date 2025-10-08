@@ -381,23 +381,23 @@ function setupIframeOnLoad() {
       setupIframeMutationObserver();
     });
 
-    const parentWidth = checkParentWidth();
+    const parentWidth = checkParentWidth() ?? 0;
     console.log('parentWidth', parentWidth)
     if (window.chatConfig.env == "dev") {
       iframe.src = prevSessionId
-        ? `http://localhost:3000/external-ai-chat/${window.chatConfig.chatId}?prevSessionId=${prevSessionId}&fromIframe=1`
-        : `http://localhost:3000/external-ai-chat/${window.chatConfig.chatId}?fromIframe=1`;
+        ? `http://localhost:3000/external-ai-chat/${window.chatConfig.chatId}?prevSessionId=${prevSessionId}&fromIframeParentWidth=${parentWidth}`
+        : `http://localhost:3000/external-ai-chat/${window.chatConfig.chatId}?fromIframeParentWidth=${parentWidth}`;
     } else if (
       window.chatConfig.env == "skillbuilder" ||
       window.chatConfig.env == "skl"
     ) {
       iframe.src = prevSessionId
-        ? `https://skillbuilder.io/external-ai-chat/${window.chatConfig.chatId}?prevSessionId=${prevSessionId}&fromIframe=1`
-        : `https://skillbuilder.io/external-ai-chat/${window.chatConfig.chatId}?fromIframe=1`;
+        ? `https://skillbuilder.io/external-ai-chat/${window.chatConfig.chatId}?prevSessionId=${prevSessionId}&fromIframeParentWidth=${parentWidth}`
+        : `https://skillbuilder.io/external-ai-chat/${window.chatConfig.chatId}?fromIframeParentWidth=${parentWidth}`;
     } else {
       iframe.src = prevSessionId
-        ? `https://${window.chatConfig.env}.skillbuilder.io/external-ai-chat/${window.chatConfig.chatId}?prevSessionId=${prevSessionId}&fromIframe=1`
-        : `https://${window.chatConfig.env}.skillbuilder.io/external-ai-chat/${window.chatConfig.chatId}?fromIframe=1`;
+        ? `https://${window.chatConfig.env}.skillbuilder.io/external-ai-chat/${window.chatConfig.chatId}?prevSessionId=${prevSessionId}&fromIframeParentWidth=${parentWidth}`
+        : `https://${window.chatConfig.env}.skillbuilder.io/external-ai-chat/${window.chatConfig.chatId}?fromIframeParentWidth=${parentWidth}`;
     }
 
     closeIframeButton = document.createElement("button");
