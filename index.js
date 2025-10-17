@@ -398,7 +398,7 @@ function setupIframeOnLoad() {
         ? `https://${window.chatConfig.env}.skillbuilder.io/external-ai-chat/${window.chatConfig.chatId}?prevSessionId=${prevSessionId}&fromIframeParentWidth=${parentWidth}`
         : `https://${window.chatConfig.env}.skillbuilder.io/external-ai-chat/${window.chatConfig.chatId}?fromIframeParentWidth=${parentWidth}`;
     }
-
+    // create close button
     closeIframeButton = document.createElement("button");
     closeIframeButton.innerHTML = closeIcon;
     closeIframeButton.classList.add("new-iframe-btn");
@@ -411,6 +411,22 @@ function setupIframeOnLoad() {
     maximizeBtn.innerHTML = maxIcon;
     iframeContainer.appendChild(maximizeBtn); // add before iframe
     iframeContainer.appendChild(iframe);
+
+    function sendIframeParentWidth() {
+      if (iframe && iframe.contentWindow) {
+        iframe.contentWindow.postMessage(
+          {
+            type: "fromIframeParentWidth",
+            width: document.documentElement.clientWidth,
+          },
+          "*"
+        );
+      }
+    }
+
+    // ✅ Attach listeners only after appending
+    iframe.addEventListener("load", sendIframeParentWidth);
+    window.addEventListener("resize", sendIframeParentWidth); 
     
     // toggle logic - default to wide mode
     let isWide = true;
@@ -560,6 +576,7 @@ function injectChatInputBox() {
     targetDiv.appendChild(container);
   });
 }
+
 
 // Observe changes in the target divs to re-inject input box if necessary
 function observeChatInput() {
