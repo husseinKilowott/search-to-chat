@@ -367,8 +367,7 @@ function setupIframeOnLoad() {
     iframe.frameBorder = "0";
     // Allow clipboard read and write from the iframe
     iframe.setAttribute("allow", "clipboard-read *; clipboard-write *");
-    // iframe.setAttribute("sandbox", "allow-same-origin allow-scripts allow-forms allow-popups allow-clipboard-read allow-clipboard-write");
-
+   
     iframe.addEventListener("load", function () {
       iframeLoaded = true;
       if (pendingInput !== null) {
