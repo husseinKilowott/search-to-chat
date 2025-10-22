@@ -403,6 +403,8 @@ function setupIframeOnLoad() {
     closeIframeButton.innerHTML = closeIcon;
     closeIframeButton.classList.add("new-iframe-btn");
     iframeContainer.appendChild(closeIframeButton);
+
+    iframe.allow = "clipboard-read; clipboard-write";
     
     // create maximize button
     maximizeBtn = document.createElement("button");
