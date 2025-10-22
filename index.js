@@ -257,6 +257,13 @@ window.addEventListener("message", (event) => {
   // return event.data;
 });
 
+// Copy to clipboard function
+window.addEventListener('message', async (event) => {
+  if (event.data.type === 'copy') {
+    await navigator.clipboard.writeText(event.data.content);
+  }
+});
+
 // Function to get cookie by name
 function getCookie(name) {
   const cookieString = document.cookie;
