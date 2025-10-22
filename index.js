@@ -365,6 +365,8 @@ function setupIframeOnLoad() {
     iframe.width = "100%";
     iframe.height = "100%";
     iframe.frameBorder = "0";
+    // Allow clipboard read and write from the iframe
+    iframe.setAttribute("allow", "clipboard-write; clipboard-read");
 
     iframe.addEventListener("load", function () {
       iframeLoaded = true;
