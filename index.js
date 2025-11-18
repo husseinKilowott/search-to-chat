@@ -585,7 +585,7 @@ function injectChatInputBox() {
     container.style.fontFamily = searchBarNav.fontFamily;
     container.style.color = searchBarNav.fontColor;
     container.style.border = `1px solid ${searchBarNav.accentColor}`;
-    container.style.padding = '4px 4px 4px 14px';
+    container.style.padding = '0 0 0 4px';
 
     const input = document.createElement('input');
     input.type = 'text';
@@ -675,6 +675,9 @@ style.innerHTML = `
   padding: 0;
   border-radius: 50px;
 }
+  .new-iframe-btn svg {
+    fill: none !important;
+  }
 .open-iframe-btn {
   box-sizing: border-box;
   overflow: hidden;
@@ -684,7 +687,7 @@ style.innerHTML = `
   font-size: 24px;
   border: none;
   cursor: pointer;
-  z-index: 10000;
+  z-index: 9999999;
   bottom: 20px;
   right: 20px;
   padding: 5px;
@@ -753,6 +756,9 @@ style.innerHTML = `
   z-index: 100001;
   padding: 0;
 }
+.maximize-iframe-btn svg {
+  fill: none !important;
+}
 .close-iframe-btn {
   position: absolute;
   top: 10px;
@@ -778,13 +784,13 @@ style.innerHTML = `
 .input-container input {
   border: none;
   outline: none;
-  flex: 1;
+  width: 100%;
   font-size: 14px;
   font-family:Manrope, sans-serif;
   color: #77757B;
 }
 .send-button {
-    background: none;
+    background: none!important;
     border: none;
     cursor: pointer;
 }
@@ -825,10 +831,10 @@ style.innerHTML = `
     display: none;
   }
   .iframe-container {
-    width: calc(100% - 20px);
-    height: calc(100vh - 20px);
-    top: 10px;
-    right: 10px;
+    width: calc(100% - 3px);
+    height: calc(100vh - 60px);
+    top: 0px;
+    right: 0px;
   }
   .iframe-container.wide {
     width: calc(100% - 20px);
