@@ -832,7 +832,7 @@ style.innerHTML = `
   }
   .iframe-container {
     width: calc(100% - 3px);
-    height: calc(100vh - 60px);
+    height: calc(100dvh - 67px);
     top: 0px;
     right: 0px;
   }
