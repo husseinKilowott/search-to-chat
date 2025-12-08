@@ -116,7 +116,8 @@ function updateButtonStyles() {
   if (bubbleIconUrl !== null) {
     button.innerHTML = `<img src="${bubbleIconUrl}" alt="chat-icon" />`;
   } else {
-    button.innerHTML = isCMU ? cmuIcon : getChatIcon(chatColors.AccentColor);
+    // button.innerHTML = isCMU ? cmuIcon : getChatIcon(chatColors.AccentColor);
+    button.innerHTML = getChatIcon(chatColors.AccentColor);
   }
 }
 
@@ -202,19 +203,22 @@ function updateDefaultButtonStyles() {
   if (bubbleIconUrl !== null) {
     button.innerHTML = `<img src="${bubbleIconUrl}" alt="chat-icon" />`;
   } else {
-    button.innerHTML = isCMU ? cmuIcon : getChatIcon(chatColors.AccentColor);
+    // button.innerHTML = isCMU ? cmuIcon : getChatIcon(chatColors.AccentColor);
+    button.innerHTML = getChatIcon(chatColors.AccentColor);
   }
 }
 
 // Function to create chat icon SVG
 function getChatIcon(fillColor) {
-  return `<svg fill="${fillColor}" xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 48 48" style="aspect-ratio: 1;">
-    <path d="M 15.5 5 C 13.2 5 11.179531 6.1997656 10.019531 8.0097656 C 10.179531 7.9997656 10.34 8 10.5 8 L 33.5 8 C 37.64 8 41 11.36 41 15.5 L 41 31.5 C 41 31.66 41.000234 31.820469 40.990234 31.980469 C 42.800234 30.820469 44 28.8 44 26.5 L 44 15.5 C 44 9.71 39.29 5 33.5 5 L 15.5 5 z M 10.5 10 C 6.9280619 10 4 12.928062 4 16.5 L 4 31.5 C 4 35.071938 6.9280619 38 10.5 38 L 11 38 L 11 42.535156 C 11 44.486408 13.392719 45.706869 14.970703 44.558594 L 23.988281 38 L 32.5 38 C 36.071938 38 39 35.071938 39 31.5 L 39 16.5 C 39 12.928062 36.071938 10 32.5 10 L 10.5 10 z M 10.5 13 L 32.5 13 C 34.450062 13 36 14.549938 36 16.5 L 36 31.5 C 36 33.450062 34.450062 35 32.5 35 L 23.5 35 A 1.50015 1.50015 0 0 0 22.617188 35.287109 L 14 41.554688 L 14 36.5 A 1.50015 1.50015 0 0 0 12.5 35 L 10.5 35 C 8.5499381 35 7 33.450062 7 31.5 L 7 16.5 C 7 16.256242 7.0241227 16.018071 7.0703125 15.789062 C 7.3936413 14.186005 8.7936958 13 10.5 13 z"></path>
-  </svg>`;
+  return `
+    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 48 48"  style="aspect-ratio:1; fill:${fillColor} !important;">
+      <path d="M 15.5 5 C 13.2 5 11.179531 6.1997656 10.019531 8.0097656 C 10.179531 7.9997656 10.34 8 10.5 8 L 33.5 8 C 37.64 8 41 11.36 41 15.5 L 41 31.5 C 41 31.66 41.000234 31.820469 40.990234 31.980469 C 42.800234 30.820469 44 28.8 44 26.5 L 44 15.5 C 44 9.71 39.29 5 33.5 5 L 15.5 5 z M 10.5 10 C 6.9280619 10 4 12.928062 4 16.5 L 4 31.5 C 4 35.071938 6.9280619 38 10.5 38 L 11 38 L 11 42.535156 C 11 44.486408 13.392719 45.706869 14.970703 44.558594 L 23.988281 38 L 32.5 38 C 36.071938 38 39 35.071938 39 31.5 L 39 16.5 C 39 12.928062 36.071938 10 32.5 10 L 10.5 10 z M 10.5 13 L 32.5 13 C 34.450062 13 36 14.549938 36 16.5 L 36 31.5 C 36 33.450062 34.450062 35 32.5 35 L 23.5 35 A 1.50015 1.50015 0 0 0 22.617188 35.287109 L 14 41.554688 L 14 36.5 A 1.50015 1.50015 0 0 0 12.5 35 L 10.5 35 C 8.5499381 35 7 33.450062 7 31.5 L 7 16.5 C 7 16.256242 7.0241227 16.018071 7.0703125 15.789062 C 7.3936413 14.186005 8.7936958 13 10.5 13 z" style="fill:${fillColor} !important"></path>
+    </svg>
+  `;
 }
 
 // CMU Icon SVG
-const cmuIcon = `<svg  fill=${chatColors.BackgroundColor} xmlns="http://www.w3.org/2000/svg" width="35" height="35" viewBox="0 0 80 80"><defs><style>.cls-1{fill:#ee3441;}.cls-2{fill:url(#linear-gradient-2);}.cls-3{fill:#fff;}.cls-4{fill:none;}.cls-5{fill:url(#linear-gradient);}.cls-6{clip-path:url(#clippath);}</style><clipPath id="clippath"><rect class="cls-4" x="-836.69" y="-354.19" width="612" height="792"/></clipPath><linearGradient id="linear-gradient" x1="16.29" y1="-59.1" x2="17.29" y2="-59.1" gradientTransform="translate(-17227.25 -58738.13) scale(994.62 -994.62)" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#001541"/><stop offset="0" stop-color="#001541"/><stop offset=".25" stop-color="#043573"/><stop offset=".85" stop-color="#c41230"/><stop offset="1" stop-color="#ef3a47"/></linearGradient><linearGradient id="linear-gradient-2" x1="4.91" y1="45.32" x2="33.95" y2="29.75" gradientUnits="userSpaceOnUse"><stop offset=".12" stop-color="#ee3441"/><stop offset="1" stop-color="#ba2025"/></linearGradient></defs><g class="cls-6"><rect class="cls-5" x="-1031.14" y="-442.69" width="1000.9" height="969" transform="translate(-238.46 -403.14) rotate(-52.2)"/></g><path class="cls-3" d="M16.99,58.1c-.12,0-.24-.02-.36-.07-.41-.15-.67-.55-.66-.98l.29-8.26h-.32c-5.29,0-9.59-4.3-9.59-9.59v-13.55c0-5.29,4.3-9.59,9.59-9.59h26.03c5.29,0,9.59,4.3,9.59,9.59v13.55c0,5.29-4.3,9.59-9.59,9.59h-16.9l-7.3,8.93c-.2.24-.49.37-.78.37Z"/><path class="cls-2" d="M16.99,58.1c-.12,0-.24-.02-.36-.07-.41-.15-.67-.55-.66-.98l.29-8.26h-.32c-5.29,0-9.59-4.3-9.59-9.59v-13.55c0-5.29,4.3-9.59,9.59-9.59h26.03c5.29,0,9.59,4.3,9.59,9.59v13.55c0,5.29-4.3,9.59-9.59,9.59h-16.9l-7.3,8.93c-.2.24-.49.37-.78.37Z"/><path class="cls-1" d="M40.93,26.91h24.69c5.11,0,9.25,4.14,9.25,9.25v12.21c0,5.11-4.14,9.25-9.25,9.25h0c-.38,0-.69.32-.67.7l.23,6.61c.02.64-.79.95-1.2.45l-6.14-7.51c-.13-.16-.32-.25-.52-.25h-16.39c-5.11,0-9.25-4.14-9.25-9.25v-12.21c0-5.11,4.14-9.25,9.25-9.25Z"/><circle class="cls-3" cx="42.49" cy="41.65" r="3.06"/><circle class="cls-3" cx="52.86" cy="41.65" r="3.06"/><circle class="cls-3" cx="63.32" cy="41.63" r="2.96"/></svg>`;
+// const cmuIcon = `<svg  fill=${chatColors.BackgroundColor} xmlns="http://www.w3.org/2000/svg" width="35" height="35" viewBox="0 0 80 80"><defs><style>.cls-1{fill:#ee3441;}.cls-2{fill:url(#linear-gradient-2);}.cls-3{fill:#fff;}.cls-4{fill:none;}.cls-5{fill:url(#linear-gradient);}.cls-6{clip-path:url(#clippath);}</style><clipPath id="clippath"><rect class="cls-4" x="-836.69" y="-354.19" width="612" height="792"/></clipPath><linearGradient id="linear-gradient" x1="16.29" y1="-59.1" x2="17.29" y2="-59.1" gradientTransform="translate(-17227.25 -58738.13) scale(994.62 -994.62)" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#001541"/><stop offset="0" stop-color="#001541"/><stop offset=".25" stop-color="#043573"/><stop offset=".85" stop-color="#c41230"/><stop offset="1" stop-color="#ef3a47"/></linearGradient><linearGradient id="linear-gradient-2" x1="4.91" y1="45.32" x2="33.95" y2="29.75" gradientUnits="userSpaceOnUse"><stop offset=".12" stop-color="#ee3441"/><stop offset="1" stop-color="#ba2025"/></linearGradient></defs><g class="cls-6"><rect class="cls-5" x="-1031.14" y="-442.69" width="1000.9" height="969" transform="translate(-238.46 -403.14) rotate(-52.2)"/></g><path class="cls-3" d="M16.99,58.1c-.12,0-.24-.02-.36-.07-.41-.15-.67-.55-.66-.98l.29-8.26h-.32c-5.29,0-9.59-4.3-9.59-9.59v-13.55c0-5.29,4.3-9.59,9.59-9.59h26.03c5.29,0,9.59,4.3,9.59,9.59v13.55c0,5.29-4.3,9.59-9.59,9.59h-16.9l-7.3,8.93c-.2.24-.49.37-.78.37Z"/><path class="cls-2" d="M16.99,58.1c-.12,0-.24-.02-.36-.07-.41-.15-.67-.55-.66-.98l.29-8.26h-.32c-5.29,0-9.59-4.3-9.59-9.59v-13.55c0-5.29,4.3-9.59,9.59-9.59h26.03c5.29,0,9.59,4.3,9.59,9.59v13.55c0,5.29-4.3,9.59-9.59,9.59h-16.9l-7.3,8.93c-.2.24-.49.37-.78.37Z"/><path class="cls-1" d="M40.93,26.91h24.69c5.11,0,9.25,4.14,9.25,9.25v12.21c0,5.11-4.14,9.25-9.25,9.25h0c-.38,0-.69.32-.67.7l.23,6.61c.02.64-.79.95-1.2.45l-6.14-7.51c-.13-.16-.32-.25-.52-.25h-16.39c-5.11,0-9.25-4.14-9.25-9.25v-12.21c0-5.11,4.14-9.25,9.25-9.25Z"/><circle class="cls-3" cx="42.49" cy="41.65" r="3.06"/><circle class="cls-3" cx="52.86" cy="41.65" r="3.06"/><circle class="cls-3" cx="63.32" cy="41.63" r="2.96"/></svg>`;
 
 // Close icon SVG
 const closeIcon = `<svg fill="none" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="32" height="32" viewBox="0 0 32 32">
@@ -235,11 +239,12 @@ const minIcon = `<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xml
 </svg>`;
 
 // Create chat button
-const isCMU = window.location.href.includes('cmu.edu');
+// const isCMU = window.location.href.includes('cmu.edu');
 if (bubbleIconUrl !== null) {
   button.innerHTML = `<img src="${bubbleIconUrl}" alt="chat-icon" />`;
 } else {
-  button.innerHTML = isCMU ? cmuIcon : getChatIcon(chatColors.AccentColor);
+  // button.innerHTML = isCMU ? cmuIcon : getChatIcon(chatColors.AccentColor);
+  button.innerHTML = getChatIcon(chatColors.AccentColor);
 }
 
 // button.innerHTML = chatIcon;
@@ -407,12 +412,12 @@ function setupIframeOnLoad() {
       window.chatConfig.env == 'skl'
     ) {
       iframe.src = prevSessionId
-        ? `https://skillbuilder.io/external-ai-chat/${window.chatConfig.chatId}?prevSessionId=${prevSessionId}&fromIframeParentWidth=${parentWidth}`
-        : `https://skillbuilder.io/external-ai-chat/${window.chatConfig.chatId}?fromIframeParentWidth=${parentWidth}`;
+        ? `https://skillyai.com/external-ai-chat/${window.chatConfig.chatId}?prevSessionId=${prevSessionId}&fromIframeParentWidth=${parentWidth}`
+        : `https://skillyai.com/external-ai-chat/${window.chatConfig.chatId}?fromIframeParentWidth=${parentWidth}`;
     } else {
       iframe.src = prevSessionId
-        ? `https://${window.chatConfig.env}.skillbuilder.io/external-ai-chat/${window.chatConfig.chatId}?prevSessionId=${prevSessionId}&fromIframeParentWidth=${parentWidth}`
-        : `https://${window.chatConfig.env}.skillbuilder.io/external-ai-chat/${window.chatConfig.chatId}?fromIframeParentWidth=${parentWidth}`;
+        ? `https://${window.chatConfig.env}.skillyai.com/external-ai-chat/${window.chatConfig.chatId}?prevSessionId=${prevSessionId}&fromIframeParentWidth=${parentWidth}`
+        : `https://${window.chatConfig.env}.skillyai.com/external-ai-chat/${window.chatConfig.chatId}?fromIframeParentWidth=${parentWidth}`;
     }
     // create close button
     closeIframeButton = document.createElement('button');
@@ -506,7 +511,7 @@ function injectChatInputBox() {
     if (!targetDiv) return;
 
     let isHeroSection = targetDiv.id === 'skl_id_search_hero_section';
-    
+
     // Skip mobile search icon behavior for hero section - hero should always show input
     if (isHeroSection) {
       // Always show input container for hero section
@@ -534,7 +539,7 @@ function injectChatInputBox() {
       if (!searchIcon) {
         searchIcon = document.createElement('button');
         searchIcon.className = 'search-icon-btn search-icon-btn-nav';
-        
+
         searchIcon.innerHTML = `
         <svg width="25" height="25" viewBox="0 0 28 28" fill="${searchBarNav.accentColor}" xmlns="http://www.w3.org/2000/svg">
           <path fill-rule="evenodd" clip-rule="evenodd" d="M14.0722 6.16342C13.978 5.74951 13.61 5.45576 13.1855 5.45576C12.761 5.45576 12.393 5.74951 12.2988 6.16342L11.543 9.48724C11.3103 10.5106 10.5112 11.3097 9.48792 11.5423L6.16411 12.2982C5.7502 12.3923 5.45645 12.7603 5.45645 13.1848C5.45645 13.6093 5.7502 13.9774 6.16411 14.0715L9.48792 14.8273C10.5112 15.06 11.3103 15.8591 11.543 16.8824L12.2988 20.2062C12.393 20.6201 12.761 20.9139 13.1855 20.9139C13.61 20.9139 13.978 20.6201 14.0722 20.2062L14.828 16.8824C15.0607 15.8591 15.8597 15.06 16.8831 14.8273L20.2069 14.0715C20.6208 13.9774 20.9145 13.6093 20.9145 13.1848C20.9145 12.7603 20.6208 12.3923 20.2069 12.2982L16.8831 11.5423C15.8597 11.3097 15.0607 10.5106 14.828 9.48724L14.0722 6.16342ZM10.3528 13.1848C11.6838 12.7305 12.7312 11.6831 13.1855 10.3522C13.6398 11.6831 14.6872 12.7305 16.0181 13.1848C14.6872 13.6391 13.6398 14.6865 13.1855 16.0175C12.7312 14.6865 11.6838 13.6391 10.3528 13.1848Z" fill="${searchBarNav.accentColor}"/>
@@ -549,7 +554,7 @@ function injectChatInputBox() {
         searchIcon.style.display = 'flex';
         searchIcon.style.alignItems = 'center';
         searchIcon.style.justifyContent = 'center';
-        
+
         // Add click event to open iframe for non-hero sections only
         searchIcon.addEventListener('click', openIframe);
         targetDiv.appendChild(searchIcon);
@@ -563,7 +568,7 @@ function injectChatInputBox() {
       if (searchIcon) {
         searchIcon.style.display = 'none';
       }
-      
+
       // Show/create input container on larger screens for non-hero sections
       const existing = targetDiv.querySelector('.input-container');
       if (existing) {
@@ -585,7 +590,7 @@ function injectChatInputBox() {
     container.style.fontFamily = searchBarNav.fontFamily;
     container.style.color = searchBarNav.fontColor;
     container.style.border = `1px solid ${searchBarNav.accentColor}`;
-    container.style.padding = '0 0 0 4px';
+    container.style.padding = '0 0 0 8px';
 
     const input = document.createElement('input');
     input.type = 'text';
@@ -780,6 +785,7 @@ style.innerHTML = `
   padding: 8px 2px 8px 14px;
   max-width: 400px;
   min-width: 200px;
+  flex-direction: row-reverse;
 }
 .input-container input {
   border: none;
@@ -788,11 +794,13 @@ style.innerHTML = `
   font-size: 14px;
   font-family:Manrope, sans-serif;
   color: #77757B;
+  margin-right: 10px;
 }
 .send-button {
     background: none!important;
     border: none;
     cursor: pointer;
+    height: 21px;
 }
 .send-button svg {
   width: 20px;
