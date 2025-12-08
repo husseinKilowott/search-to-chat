@@ -542,10 +542,10 @@ function injectChatInputBox() {
         
        let iconSize;
         switch (searchBarNav.size) {
-          case 32:
+          case 40:
             iconSize = 16;
             break;
-          case 40:
+          case 48:
             iconSize = 20;
             break;
           case 56:
