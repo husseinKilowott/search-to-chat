@@ -540,9 +540,8 @@ function injectChatInputBox() {
         searchIcon = document.createElement('button');
         searchIcon.className = 'search-icon-btn search-icon-btn-nav';
         
-        const size = Number(searchBarNav.size) || 40;
        let iconSize;
-        switch (size) {
+        switch (searchBarNav.size) {
           case 32:
             iconSize = 16;
             break;
@@ -551,6 +550,9 @@ function injectChatInputBox() {
             break;
           case 56:
             iconSize = 28;
+            break;
+          default:
+            iconSize = 20;
             break;
          
         }
