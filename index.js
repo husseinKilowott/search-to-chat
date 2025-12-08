@@ -64,7 +64,7 @@ async function fetchColors() {
     searchBarNav.shape = colors.data.shapeNav;
     searchBarNav.size = colors.data.sizeNav;
     searchBarNav.placeHolderText =
-      colors.data.placeholderText || searchBarNav.placeHolderText;
+      colors.data.placeholderNav || searchBarNav.placeHolderText;
     searchBarNav.backgroundColor =
       colors.data.backgroundColorNav || searchBarNav.backgroundColor;
     searchBarNav.accentColor =
@@ -155,7 +155,7 @@ function updateInputBoxStyles() {
   input.style.setProperty('::placeholder', searchBarNav.fontColor, 'important');
   input.placeholder = searchBarNav.placeHolderText;
 
-  //input.style.setProperty('--placeholder-color', searchBarNav.fontColor);
+  input.style.setProperty('--placeholder-color', '#77757B');
 
   const sendButton = document.getElementsByClassName('send-button')[0];
   sendButton.innerHTML = `
@@ -180,7 +180,7 @@ function updateInputBoxStyles() {
     'important'
   );
   const sendButtonHero = document.getElementsByClassName('send-button-hero')[0];
-  //inputHero.style.setProperty('--placeholder-color', searchBarHero.fontColor);
+  inputHero.style.setProperty('--placeholder-color', '#77757B');
   sendButtonHero.innerHTML = `
 <svg width="22" height="22" viewBox="0 0 22 22" fill=${searchBarHero.accentColor} xmlns="http://www.w3.org/2000/svg">
 <path d="M10.4175 4.82227C10.7557 4.82227 11.0495 5.05692 11.1245 5.38672L11.6636 7.76074C11.8234 8.46347 12.3729 9.01208 13.0757 9.17188L15.4497 9.71191C15.7794 9.78692 16.0131 10.0799 16.0132 10.418C16.0132 10.7562 15.7795 11.05 15.4497 11.125L13.0757 11.6641C12.3729 11.8239 11.8234 12.3734 11.6636 13.0762L11.1245 15.4502C11.0495 15.78 10.7557 16.0137 10.4175 16.0137C10.0794 16.0136 9.78643 15.7799 9.71143 15.4502L9.17139 13.0762C9.01159 12.3734 8.46298 11.8239 7.76025 11.6641L5.38623 11.125C5.05643 11.05 4.82178 10.7562 4.82178 10.418C4.82189 10.0798 5.05651 9.78688 5.38623 9.71191L7.76025 9.17188C8.46284 9.01201 9.01152 8.46333 9.17139 7.76074L9.71143 5.38672C9.78639 5.057 10.0794 4.82238 10.4175 4.82227ZM10.4175 8.60742C10.0805 9.42815 9.42766 10.0809 8.60693 10.418C9.42733 10.7548 10.0803 11.4073 10.4175 12.2275C10.7545 11.4077 11.4072 10.755 12.2271 10.418C11.4069 10.0808 10.7543 9.42782 10.4175 8.60742Z" fill=${searchBarHero.accentColor} stroke=${searchBarHero.accentColor} stroke-width="0.15"/>
