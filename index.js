@@ -86,6 +86,7 @@ async function fetchColors() {
 
     appendButton();
     updateButtonStyles();
+    updateButtonSize();
     updateInputBoxStyles();
     updateMobileButtonStyles();
     return colors;
@@ -121,6 +122,11 @@ function updateButtonStyles() {
     // button.innerHTML = isCMU ? cmuIcon : getChatIcon(chatColors.AccentColor);
     button.innerHTML = getChatIcon(chatColors.AccentColor);
   }
+}
+
+function updateButtonSize() {
+  button.style.width = `${chatBubbleSize}px`;
+  button.style.height = `${chatBubbleSize}px`;
 }
 
 // Update mobile button styles
