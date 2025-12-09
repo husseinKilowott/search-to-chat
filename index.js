@@ -25,6 +25,7 @@ let searchBarHero = {
 };
 
 let chatBubbleBackgroundColorEnabled = true;
+let chatBubbleSize = '55px';
 
 // Fetch colors from API
 let bubbleIconUrl = null;
@@ -60,6 +61,7 @@ async function fetchColors() {
     chatBubbleBackgroundColorEnabled =
       colors.data.chatBubbleBackgroundColorEnabled ??
       chatBubbleBackgroundColorEnabled;
+    chatBubbleSize = colors.data.chatBubbleSize || chatBubbleSize;
 
     searchBarNav.shape = colors.data.shapeNav;
     searchBarNav.size = colors.data.sizeNav;
@@ -704,8 +706,8 @@ style.innerHTML = `
   box-sizing: border-box;
   overflow: hidden;
   color: white;
-  width: 55px;
-  height: 55px;
+  width: ${chatBubbleSize};
+  height: ${chatBubbleSize};
   font-size: 24px;
   border: none;
   cursor: pointer;
