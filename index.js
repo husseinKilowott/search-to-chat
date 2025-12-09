@@ -25,7 +25,7 @@ let searchBarHero = {
 };
 
 let chatBubbleBackgroundColorEnabled = true;
-let chatBubbleSize = '55px';
+let chatBubbleSize = '55';
 
 // Fetch colors from API
 let bubbleIconUrl = null;
