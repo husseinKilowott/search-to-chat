@@ -86,7 +86,7 @@ async function fetchColors() {
 
     appendButton();
     updateButtonStyles();
-    updateButtonSize();
+    updateButtonSize(chatBubbleBackgroundColorEnabled);
     updateInputBoxStyles();
     updateMobileButtonStyles();
     return colors;
@@ -124,9 +124,15 @@ function updateButtonStyles() {
   }
 }
 
-function updateButtonSize() {
-  button.style.width = `${chatBubbleSize}px`;
-  button.style.height = `${chatBubbleSize}px`;
+function updateButtonSize(chatBubbleBackgroundColorEnabled) {
+  if(chatBubbleBackgroundColorEnabled) {
+    button.style.width = `${chatBubbleSize}px`;
+    button.style.height = `${chatBubbleSize}px`;
+  }else{
+    button.style.width = `${chatBubbleSize}px`;
+    button.style.height = `${chatBubbleSize}px`;
+    button.style.padding = '0';
+  }
 }
 
 // Update mobile button styles
