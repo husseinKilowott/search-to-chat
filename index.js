@@ -1,3 +1,12 @@
+// Platform and component detection
+// Wix mode: platform: 'wix', component: 'searchBar' | 'chatBubble'
+const isWixPlatform = window.chatConfig?.platform === 'wix';
+const wixComponent = window.chatConfig?.component || 'both'; // 'searchBar', 'chatBubble', or 'both'
+
+// Store actual viewport width (from parent window in Wix context)
+// This fixes the maximize button visibility issue in Wix iframes
+let actualViewportWidth = window.innerWidth;
+
 // Constants and default values
 const chatColors = {
   BackgroundColor: '#FFFFFF',
@@ -22,6 +31,7 @@ let searchBarHero = {
   placeHolderText: 'Ask me anything...',
   backgroundColor: '#ffffff',
   fontColor: '#000000',
+  starterQuestions: [],
 };
 
 let chatBubbleBackgroundColorEnabled = true;
@@ -84,16 +94,47 @@ async function fetchColors() {
     searchBarHero.fontColor =
       colors.data.fontColorHero || searchBarHero.fontColor;
 
-    appendButton();
-    updateButtonStyles();
-    updateButtonSize(chatBubbleBackgroundColorEnabled);
-    updateInputBoxStyles();
-    updateMobileButtonStyles();
+    // Fetch starter questions if enabled
+    if (colors.data.starterQuestionsHero) {
+      try {
+        const detailsResponse = await fetch(
+          `${baseUrl}/api/v1/skilly/${window.chatConfig.chatId}/details`
+        );
+        if (detailsResponse.ok) {
+          const detailsData = await detailsResponse.json();
+          searchBarHero.starterQuestions =
+            detailsData.data?.starterQuestions || [];
+        }
+      } catch (err) {
+        console.warn('Failed to fetch starter questions:', err);
+      }
+    }
+
+    // Only initialize components based on platform/component config
+    if (
+      !isWixPlatform ||
+      wixComponent === 'chatBubble' ||
+      wixComponent === 'both'
+    ) {
+      appendButton();
+      updateButtonStyles();
+      updateButtonSize(chatBubbleBackgroundColorEnabled);
+    }
+    if (!isWixPlatform || wixComponent === 'both') {
+      updateInputBoxStyles();
+      updateMobileButtonStyles();
+    }
     return colors;
   } catch (error) {
     // console.error("Error fetching colors:", error);
-    appendButton();
-    updateDefaultButtonStyles();
+    if (
+      !isWixPlatform ||
+      wixComponent === 'chatBubble' ||
+      wixComponent === 'both'
+    ) {
+      appendButton();
+      updateDefaultButtonStyles();
+    }
     return null; // Fallback to default colors if API call fails
   }
 }
@@ -104,6 +145,7 @@ fetchColors();
 // Create and style the chat button
 var button = document.createElement('button');
 button.classList.add('open-iframe-btn');
+button.setAttribute('aria-label', 'Open chat');
 function updateButtonStyles() {
   if (chatBubbleBackgroundColorEnabled) {
     // Normal styling with background color and shadow
@@ -125,10 +167,10 @@ function updateButtonStyles() {
 }
 
 function updateButtonSize(chatBubbleBackgroundColorEnabled) {
-  if(chatBubbleBackgroundColorEnabled) {
+  if (chatBubbleBackgroundColorEnabled) {
     button.style.width = `${chatBubbleSize}px`;
     button.style.height = `${chatBubbleSize}px`;
-  }else{
+  } else {
     button.style.width = `${chatBubbleSize}px`;
     button.style.height = `${chatBubbleSize}px`;
     button.style.padding = '0';
@@ -195,11 +237,71 @@ function updateInputBoxStyles() {
   );
   const sendButtonHero = document.getElementsByClassName('send-button-hero')[0];
   inputHero.style.setProperty('--placeholder-color', '#77757B');
+
+  // Render starter questions below hero input
+  renderStarterQuestions(containerHero);
   sendButtonHero.innerHTML = `
 <svg width="22" height="22" viewBox="0 0 22 22" fill=${searchBarHero.accentColor} xmlns="http://www.w3.org/2000/svg">
 <path d="M10.4175 4.82227C10.7557 4.82227 11.0495 5.05692 11.1245 5.38672L11.6636 7.76074C11.8234 8.46347 12.3729 9.01208 13.0757 9.17188L15.4497 9.71191C15.7794 9.78692 16.0131 10.0799 16.0132 10.418C16.0132 10.7562 15.7795 11.05 15.4497 11.125L13.0757 11.6641C12.3729 11.8239 11.8234 12.3734 11.6636 13.0762L11.1245 15.4502C11.0495 15.78 10.7557 16.0137 10.4175 16.0137C10.0794 16.0136 9.78643 15.7799 9.71143 15.4502L9.17139 13.0762C9.01159 12.3734 8.46298 11.8239 7.76025 11.6641L5.38623 11.125C5.05643 11.05 4.82178 10.7562 4.82178 10.418C4.82189 10.0798 5.05651 9.78688 5.38623 9.71191L7.76025 9.17188C8.46284 9.01201 9.01152 8.46333 9.17139 7.76074L9.71143 5.38672C9.78639 5.057 10.0794 4.82238 10.4175 4.82227ZM10.4175 8.60742C10.0805 9.42815 9.42766 10.0809 8.60693 10.418C9.42733 10.7548 10.0803 11.4073 10.4175 12.2275C10.7545 11.4077 11.4072 10.755 12.2271 10.418C11.4069 10.0808 10.7543 9.42782 10.4175 8.60742Z" fill=${searchBarHero.accentColor} stroke=${searchBarHero.accentColor} stroke-width="0.15"/>
 <path d="M3.70312 3.70312C7.40706 -0.000780503 13.4123 -0.000781082 17.1162 3.70312C20.6476 7.23469 20.8102 12.8568 17.6074 16.583L20.8623 19.8379C21.1453 20.1208 21.1453 20.5794 20.8623 20.8623C20.5794 21.1453 20.1208 21.1453 19.8379 20.8623L16.583 17.6074C12.8568 20.8102 7.23469 20.6476 3.70312 17.1162C-0.000781082 13.4123 -0.000780503 7.40706 3.70312 3.70312ZM16.0918 4.72754C12.9537 1.58948 7.86557 1.58948 4.72754 4.72754C1.58948 7.86557 1.58948 12.9537 4.72754 16.0918C7.86558 19.2297 12.9538 19.2298 16.0918 16.0918C19.2298 12.9538 19.2297 7.86558 16.0918 4.72754Z" fill=${searchBarHero.accentColor} stroke=${searchBarHero.accentColor} stroke-width="0.15"/>
 </svg>`;
+}
+
+// Render starter questions as pills below hero input
+function renderStarterQuestions(containerHero) {
+  if (
+    !searchBarHero.starterQuestions ||
+    searchBarHero.starterQuestions.length === 0
+  )
+    return;
+
+  // Remove existing wrapper if present
+  const existingWrapper = containerHero.parentElement?.querySelector(
+    '.starter-questions-wrapper'
+  );
+  if (existingWrapper) existingWrapper.remove();
+
+  const wrapper = document.createElement('div');
+  wrapper.className = 'starter-questions-wrapper';
+
+  searchBarHero.starterQuestions.forEach(question => {
+    const chip = document.createElement('button');
+    chip.className = 'starter-question-chip';
+    chip.innerHTML = `
+      <span class="chip-content">
+        <svg class="question-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="#77757B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M9.09 9C9.3251 8.33167 9.78915 7.76811 10.4 7.40913C11.0108 7.05016 11.7289 6.91894 12.4272 7.03871C13.1255 7.15849 13.7588 7.52152 14.2151 8.06353C14.6713 8.60553 14.9211 9.29152 14.92 10C14.92 12 11.92 13 11.92 13" stroke="#77757B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M12 17H12.01" stroke="#77757B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        ${question}
+      </span>
+    `;
+    chip.addEventListener('click', () => {
+      // Trigger the search with this question
+      const inputHero = containerHero.querySelector('input');
+      if (inputHero) {
+        inputHero.value = question;
+        // Trigger the iframe with the question
+        if (typeof openIframe === 'function') {
+          openIframe();
+        }
+        if (iframe && iframeLoaded) {
+          iframe.contentWindow.postMessage(
+            { type: 'setInput', value: question },
+            '*'
+          );
+        } else {
+          pendingInput = question;
+        }
+        inputHero.value = '';
+      }
+    });
+    wrapper.appendChild(chip);
+  });
+
+  // Insert after the hero container
+  containerHero.parentElement?.insertBefore(wrapper, containerHero.nextSibling);
 }
 
 // Update default button styles
@@ -228,8 +330,8 @@ function getChatIcon(fillColor) {
     <svg xmlns="http://www.w3.org/2000/svg" width="${
       chatBubbleSize ? chatBubbleSize / 2 : 25
     }" height="${
-    chatBubbleSize ? chatBubbleSize / 2 : 25
-  }" viewBox="0 0 48 48"  style="aspect-ratio:1; fill:${fillColor} !important;">
+      chatBubbleSize ? chatBubbleSize / 2 : 25
+    }" viewBox="0 0 48 48"  style="aspect-ratio:1; fill:${fillColor} !important;">
       <path d="M 15.5 5 C 13.2 5 11.179531 6.1997656 10.019531 8.0097656 C 10.179531 7.9997656 10.34 8 10.5 8 L 33.5 8 C 37.64 8 41 11.36 41 15.5 L 41 31.5 C 41 31.66 41.000234 31.820469 40.990234 31.980469 C 42.800234 30.820469 44 28.8 44 26.5 L 44 15.5 C 44 9.71 39.29 5 33.5 5 L 15.5 5 z M 10.5 10 C 6.9280619 10 4 12.928062 4 16.5 L 4 31.5 C 4 35.071938 6.9280619 38 10.5 38 L 11 38 L 11 42.535156 C 11 44.486408 13.392719 45.706869 14.970703 44.558594 L 23.988281 38 L 32.5 38 C 36.071938 38 39 35.071938 39 31.5 L 39 16.5 C 39 12.928062 36.071938 10 32.5 10 L 10.5 10 z M 10.5 13 L 32.5 13 C 34.450062 13 36 14.549938 36 16.5 L 36 31.5 C 36 33.450062 34.450062 35 32.5 35 L 23.5 35 A 1.50015 1.50015 0 0 0 22.617188 35.287109 L 14 41.554688 L 14 36.5 A 1.50015 1.50015 0 0 0 12.5 35 L 10.5 35 C 8.5499381 35 7 33.450062 7 31.5 L 7 16.5 C 7 16.256242 7.0241227 16.018071 7.0703125 15.789062 C 7.3936413 14.186005 8.7936958 13 10.5 13 z" style="fill:${fillColor} !important"></path>
     </svg>
   `;
@@ -267,8 +369,15 @@ if (bubbleIconUrl !== null) {
 
 // button.innerHTML = chatIcon;
 function appendButton() {
-  document.body.appendChild(button);
-  button.style.backgroundColor = window.chatConfig.color;
+  if (document.body) {
+    document.body.appendChild(button);
+    button.style.backgroundColor = window.chatConfig.color;
+  } else {
+    window.addEventListener('DOMContentLoaded', () => {
+      document.body.appendChild(button);
+      button.style.backgroundColor = window.chatConfig.color;
+    });
+  }
 }
 var iframeContainer; // Declared without initialization
 var iframe; // Declared without initialization
@@ -295,6 +404,63 @@ window.addEventListener('message', async event => {
     ]);
   }
 });
+
+// Wix parent viewport width handler
+// This receives the actual browser viewport width from the Wix parent page
+// Required to fix the maximize button visibility issue (Issue #3)
+window.addEventListener('message', event => {
+  if (event.data.type === 'wix_viewport_width') {
+    actualViewportWidth = event.data.width;
+    updateResponsiveElements();
+  }
+});
+
+// Update responsive elements based on actual viewport width (for Wix compatibility)
+// This fixes Issue #3: maximize button not showing due to CSS media queries using iframe width
+function updateResponsiveElements() {
+  const width = isWixPlatform ? actualViewportWidth : window.innerWidth;
+
+  // Update maximize button visibility based on actual viewport
+  if (maximizeBtn) {
+    if (width <= 992) {
+      maximizeBtn.style.display = 'none';
+    } else {
+      maximizeBtn.style.display = 'flex';
+    }
+  }
+
+  // Update iframe container styles for mobile
+  if (iframeContainer) {
+    if (width <= 992) {
+      iframeContainer.classList.add('mobile-view');
+    } else {
+      iframeContainer.classList.remove('mobile-view');
+    }
+  }
+}
+
+// Wix integration: Listen for messages from Wix parent (relayed from search bar)
+if (
+  isWixPlatform &&
+  (wixComponent === 'chatBubble' || wixComponent === 'both')
+) {
+  window.addEventListener('message', event => {
+    if (event.data && event.data.type === 'skilly_open_chat') {
+      // Open the chat iframe with the query from search bar
+      if (typeof openIframe === 'function') {
+        openIframe();
+      }
+      if (iframe && iframeLoaded) {
+        iframe.contentWindow.postMessage(
+          { type: 'setInput', value: event.data.query },
+          '*'
+        );
+      } else {
+        pendingInput = event.data.query;
+      }
+    }
+  });
+}
 
 // Function to get cookie by name
 function getCookie(name) {
@@ -328,8 +494,19 @@ function checkParentWidth() {
 }
 
 // Run on load + resize
-window.addEventListener('load', checkParentWidth);
-window.addEventListener('resize', checkParentWidth);
+window.addEventListener('load', () => {
+  checkParentWidth();
+  // Request viewport width from Wix parent on load
+  if (isWixPlatform) {
+    window.parent.postMessage({ type: 'skilly_request_viewport_width' }, '*');
+  }
+  // Initial responsive update
+  updateResponsiveElements();
+});
+window.addEventListener('resize', () => {
+  checkParentWidth();
+  updateResponsiveElements();
+});
 
 // Iframe setup
 let iframeLoaded = false;
@@ -359,12 +536,22 @@ function setupIframeMutationObserver() {
       });
 
       // Start observing the iframe document
-      observer.observe(iframe.contentDocument.body, {
-        childList: true,
-        subtree: true,
-        attributes: true,
-        characterData: true,
-      });
+      if (iframe.contentDocument.body) {
+        console.log('iframe.contentDocument:', iframe.contentDocument);
+        console.log(
+          'iframe.contentDocument.body:',
+          iframe.contentDocument?.body
+        );
+        observer.observe(iframe.contentDocument.body, {
+          childList: true,
+          subtree: true,
+          attributes: true,
+          characterData: true,
+        });
+        // console.log("Iframe mutation observer started successfully");
+      } else {
+        console.warn('iframe.contentDocument.body is null - cannot observe');
+      }
 
       // console.log("Iframe mutation observer started successfully");
     } else {
@@ -399,14 +586,25 @@ function setupIframeOnLoad() {
     iframeContainer.id = 'iframeContainer';
     iframeContainer.classList.add('iframe-container');
 
+    // Add Wix-specific class for styling (used in CSS selectors)
+    if (isWixPlatform) {
+      iframeContainer.classList.add('wix-mode');
+    }
+
     iframe = document.createElement('iframe');
     iframe.id = 'iframeElement';
     iframe.width = '100%';
     iframe.height = '100%';
     iframe.frameBorder = '0';
+    iframe.title = 'Chat assistant';
+    iframe.tabIndex = 0;
 
     iframe.addEventListener('load', function () {
       iframeLoaded = true;
+      // Notify Wix parent that chat is ready (if in Wix mode)
+      if (isWixPlatform) {
+        window.parent.postMessage({ type: 'skilly_chat_ready' }, '*');
+      }
       if (pendingInput !== null) {
         iframe.contentWindow.postMessage(
           { type: 'setInput', value: pendingInput },
@@ -441,17 +639,25 @@ function setupIframeOnLoad() {
     closeIframeButton = document.createElement('button');
     closeIframeButton.innerHTML = closeIcon;
     closeIframeButton.classList.add('new-iframe-btn');
-    iframeContainer.appendChild(closeIframeButton);
+    closeIframeButton.setAttribute('aria-label', 'Close chat');
+    closeIframeButton.setAttribute('tabindex', '0');
+    closeIframeButton.setAttribute('role', 'button');
 
     iframe.allow = `clipboard-read * self ${iframe.src}; clipboard-write *`;
 
     // create maximize button
     maximizeBtn = document.createElement('button');
     maximizeBtn.classList.add('maximize-iframe-btn');
-    maximizeBtn.setAttribute('aria-label', 'Toggle iframe width');
+    maximizeBtn.setAttribute('aria-label', 'Maximize chat window');
+    maximizeBtn.setAttribute('tabindex', '0');
+    maximizeBtn.setAttribute('role', 'button');
     maximizeBtn.innerHTML = maxIcon;
-    iframeContainer.appendChild(maximizeBtn); // add before iframe
+
+    // Append iframe first, then buttons for proper tab navigation
+    // (focus flows from iframe content -> close -> maximize)
     iframeContainer.appendChild(iframe);
+    iframeContainer.appendChild(closeIframeButton);
+    iframeContainer.appendChild(maximizeBtn);
 
     function sendIframeParentWidth() {
       if (iframe && iframe.contentWindow) {
@@ -474,46 +680,100 @@ function setupIframeOnLoad() {
     // Don't add wide class by default - iframe starts in normal size
     //iframeContainer.classList.add('wide');
     maximizeBtn.innerHTML = isWide ? minIcon : maxIcon;
-    maximizeBtn.addEventListener('click', () => {
+
+    const toggleMaximize = () => {
       isWide = !isWide;
       maximizeBtn.innerHTML = isWide ? minIcon : maxIcon;
+      maximizeBtn.setAttribute(
+        'aria-label',
+        isWide ? 'Minimize chat window' : 'Maximize chat window'
+      );
       iframeContainer.classList.toggle('wide', isWide);
       checkParentWidth();
+    };
+
+    maximizeBtn.addEventListener('click', toggleMaximize);
+
+    maximizeBtn.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        toggleMaximize();
+      }
     });
 
-    document.body.appendChild(iframeContainer);
+    if (document.body) {
+      document.body.appendChild(iframeContainer);
+    } else {
+      window.addEventListener('DOMContentLoaded', () => {
+        document.body.appendChild(iframeContainer);
+      });
+    }
 
-    closeIframeButton.addEventListener('click', function () {
+    const closeIframe = () => {
       iframeContainer.style.display = 'none';
       document.body.style.overflow = '';
       button.style.display = 'flex';
       // Reset to normal mode when closing
       isWide = false;
       maximizeBtn.innerHTML = maxIcon;
+      maximizeBtn.setAttribute('aria-label', 'Maximize chat window');
       iframeContainer.classList.remove('wide');
+      // Return focus to chat bubble for accessibility
+      button.focus();
+    };
+
+    closeIframeButton.addEventListener('click', closeIframe);
+
+    closeIframeButton.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        closeIframe();
+      }
     });
 
     button.addEventListener('click', function () {
       iframeContainer.style.display = 'block';
       document.body.style.overflow = '';
       button.style.display = 'none';
+      // Focus iframe for accessibility - allows tab navigation within iframe
+      if (iframe) {
+        iframe.focus();
+      }
     });
   }
   // Hide iframe container by default
   iframeContainer.style.display = 'none';
 }
 
-// Initialize
-setupIframeOnLoad();
+// Initialize iframe only for chat bubble component (or both/non-Wix)
+if (
+  !isWixPlatform ||
+  wixComponent === 'chatBubble' ||
+  wixComponent === 'both'
+) {
+  setupIframeOnLoad();
+}
 
 // Function to open iframe
 function openIframe() {
+  if (!button || !iframeContainer) return;
   button.style.display = 'none';
   iframeContainer.style.display = 'block';
   iframeContainer.style.bottom = '5px';
   document.body.style.overflow = 'hidden';
+  // Focus iframe for accessibility - allows tab navigation within iframe
+  if (iframe) {
+    iframe.focus();
+  }
 }
-button.addEventListener('click', openIframe);
+
+if (
+  !isWixPlatform ||
+  wixComponent === 'chatBubble' ||
+  wixComponent === 'both'
+) {
+  button.addEventListener('click', openIframe);
+}
 
 // Create and style the chat button
 let sendBtn;
@@ -632,14 +892,28 @@ function injectChatInputBox() {
 
     function triggerIframe() {
       if (!input.value.trim()) return;
-      openIframe(input.value.trim());
-      if (iframeLoaded) {
-        iframe.contentWindow.postMessage(
-          { type: 'setInput', value: input.value.trim() },
+      const query = input.value.trim();
+
+      // Wix mode: Send message to parent for relay to chat bubble
+      if (isWixPlatform && wixComponent === 'searchBar') {
+        window.parent.postMessage(
+          {
+            type: 'skilly_open_chat',
+            query: query,
+          },
           '*'
         );
       } else {
-        pendingInput = input.value.trim();
+        // Standard mode: Direct communication
+        openIframe(query);
+        if (iframeLoaded) {
+          iframe.contentWindow.postMessage(
+            { type: 'setInput', value: query },
+            '*'
+          );
+        } else {
+          pendingInput = query;
+        }
       }
       input.value = '';
     }
@@ -692,11 +966,88 @@ function handleResize() {
   injectChatInputBox();
 }
 
-// Initial call to set up the input box and observer
-observeChatInput();
+// Initial call to set up the input box and observer (skip for Wix chat bubble only)
+if (!isWixPlatform || wixComponent === 'both') {
+  observeChatInput();
+  // Add resize listener for responsive behavior
+  window.addEventListener('resize', handleResize);
+}
 
-// Add resize listener for responsive behavior
-window.addEventListener('resize', handleResize);
+// Wix search bar only mode: Create standalone search bar
+if (isWixPlatform && wixComponent === 'searchBar') {
+  function createWixSearchBar() {
+    const container = document.createElement('div');
+    container.className = 'input-container wix-search-bar';
+    container.style.borderRadius = `${searchBarNav.shape}px`;
+    container.style.height = `${searchBarNav.size}px`;
+    container.style.backgroundColor = searchBarNav.backgroundColor;
+    container.style.border = `1px solid ${searchBarNav.accentColor}`;
+    container.style.padding = '0 0 0 8px';
+    container.style.display = 'flex';
+    container.style.alignItems = 'center';
+    container.style.maxWidth = '400px';
+    container.style.minWidth = '200px';
+    container.style.flexDirection = 'row-reverse';
+
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.placeholder = searchBarNav.placeHolderText || 'Ask me anything...';
+    input.style.border = 'none';
+    input.style.outline = 'none';
+    input.style.width = '100%';
+    input.style.fontSize = '14px';
+    input.style.fontFamily = 'Manrope, sans-serif';
+    input.style.color = '#77757B';
+    input.style.marginRight = '10px';
+    input.style.backgroundColor = searchBarNav.backgroundColor;
+
+    function submitSearch() {
+      const query = input.value.trim();
+      if (!query) return;
+      // Send message to Wix parent for relay to chat bubble
+      window.parent.postMessage(
+        {
+          type: 'skilly_open_chat',
+          query: query,
+        },
+        '*'
+      );
+      input.value = '';
+    }
+
+    input.addEventListener('keypress', e => {
+      if (e.key === 'Enter') submitSearch();
+    });
+
+    const sendBtn = document.createElement('button');
+    sendBtn.className = 'send-button';
+    sendBtn.innerHTML = `
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="${searchBarNav.accentColor}" xmlns="http://www.w3.org/2000/svg">
+        <path d="M10.4175 4.82227C10.7557 4.82227 11.0495 5.05692 11.1245 5.38672L11.6636 7.76074C11.8234 8.46347 12.3729 9.01208 13.0757 9.17188L15.4497 9.71191C15.7794 9.78692 16.0131 10.0799 16.0132 10.418C16.0132 10.7562 15.7795 11.05 15.4497 11.125L13.0757 11.6641C12.3729 11.8239 11.8234 12.3734 11.6636 13.0762L11.1245 15.4502C11.0495 15.78 10.7557 16.0137 10.4175 16.0137C10.0794 16.0136 9.78643 15.7799 9.71143 15.4502L9.17139 13.0762C9.01159 12.3734 8.46298 11.8239 7.76025 11.6641L5.38623 11.125C5.05643 11.05 4.82178 10.7562 4.82178 10.418C4.82189 10.0798 5.05651 9.78688 5.38623 9.71191L7.76025 9.17188C8.46284 9.01201 9.01152 8.46333 9.17139 7.76074L9.71143 5.38672C9.78639 5.057 10.0794 4.82238 10.4175 4.82227ZM10.4175 8.60742C10.0805 9.42815 9.42766 10.0809 8.60693 10.418C9.42733 10.7548 10.0803 11.4073 10.4175 12.2275C10.7545 11.4077 11.4072 10.755 12.2271 10.418C11.4069 10.0808 10.7543 9.42782 10.4175 8.60742Z" fill="${searchBarNav.accentColor}" stroke="${searchBarNav.accentColor}" stroke-width="0.15"/>
+        <path d="M3.70312 3.70312C7.40706 -0.000780503 13.4123 -0.000781082 17.1162 3.70312C20.6476 7.23469 20.8102 12.8568 17.6074 16.583L20.8623 19.8379C21.1453 20.1208 21.1453 20.5794 20.8623 20.8623C20.5794 21.1453 20.1208 21.1453 19.8379 20.8623L16.583 17.6074C12.8568 20.8102 7.23469 20.6476 3.70312 17.1162C-0.000781082 13.4123 -0.000780503 7.40706 3.70312 3.70312ZM16.0918 4.72754C12.9537 1.58948 7.86557 1.58948 4.72754 4.72754C1.58948 7.86557 1.58948 12.9537 4.72754 16.0918C7.86558 19.2297 12.9538 19.2298 16.0918 16.0918C19.2298 12.9538 19.2297 7.86558 16.0918 4.72754Z" fill="${searchBarNav.accentColor}" stroke="${searchBarNav.accentColor}" stroke-width="0.15"/>
+      </svg>
+    `;
+    sendBtn.addEventListener('click', submitSearch);
+
+    container.appendChild(input);
+    container.appendChild(sendBtn);
+
+    if (document.body) {
+      document.body.appendChild(container);
+    } else {
+      window.addEventListener('DOMContentLoaded', () => {
+        document.body.appendChild(container);
+      });
+    }
+  }
+
+  // Create search bar after styles are fetched
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', createWixSearchBar);
+  } else {
+    createWixSearchBar();
+  }
+}
 
 // Add styles
 var style = document.createElement('style');
@@ -707,15 +1058,36 @@ style.innerHTML = `
   right: 16px;
   width: 32px;
   height: 32px;
-  border: none;
+  border: none!important;
   cursor: pointer;
   z-index: 10000;
   background: transparent;
-  padding: 0;
+  padding: 0!important;
   border-radius: 50px;
 }
-  .new-iframe-btn svg {
+
+.iframe-container .new-iframe-btn {
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.2)!important;
+    transform: scale(1.05);
+  }
+  &:focus-visible{
+    outline: 2px solid #ffffff!important;
+    outline-offset: 2px!important;
+    background-color: rgba(255, 255, 255, 0.15)!important;
+  }
+  &:focus {
+    outline: 2px solid #ffffff!important;
+    outline-offset: 2px!important;
+  }
+}
+
+.iframe-container .new-iframe-btn svg {
     fill: none !important;
+    padding-left: 0 !important;
+    :hover {
+      background-color: transparent!important;
+    }
   }
 .open-iframe-btn {
   box-sizing: border-box;
@@ -736,6 +1108,12 @@ style.innerHTML = `
   align-items: center;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
   outline: none;
+}
+.open-iframe-btn:focus-visible {
+  outline: 2px solid #005fcc !important;
+  outline: none;
+  outline-offset: 2px !important;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2), 0 0 0 4px rgba(0, 95, 204, 0.3) !important;
 }
 .search-icon-btn {
   background: none;
@@ -762,7 +1140,7 @@ style.innerHTML = `
   position: fixed;
   top: 20px;
   right: 20px;
-  width: 500px;
+  width: 650px;
   height: calc(100vh - 40px);
   border: 2px solid #ddd;
   border-radius: 10px;
@@ -786,18 +1164,38 @@ style.innerHTML = `
   display: flex;
   align-items: center;
   justify-content: center;
-  border: none;
+  border: none!important;
   background: transparent;
-  padding: 0;
+  padding: 0!important;
   border-radius: 50px;
   color: #fff;
   cursor: pointer;
   z-index: 100001;
-  padding: 0;
 }
+
+.iframe-container .maximize-iframe-btn {
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.2)!important;
+    transform: scale(1.05);
+  }
+  &:focus-visible {
+    outline: 2px solid #ffffff!important;
+    outline-offset: 2px!important;
+    background-color: rgba(255, 255, 255, 0.15)!important;
+  }
+  &:focus {
+    outline: 2px solid #ffffff!important;
+    outline-offset: 2px!important;
+  }
+}
+
 .maximize-iframe-btn svg {
   fill: none !important;
-}
+  padding-right: 0!important;
+  :hover {
+    background-color: transparent!important;
+  }
+  }
 .close-iframe-btn {
   position: absolute;
   top: 10px;
@@ -844,7 +1242,7 @@ style.innerHTML = `
 
 /* Mobile responsive styles - only affects non-hero input containers */
 @media (max-width: 650px) {
-  .input-container:not(.hero-input) {
+  .input-container:not(.hero-input):not(.wix-search-bar) {
     display: none !important;
   }
   
@@ -854,6 +1252,10 @@ style.innerHTML = `
   
   /* Hero input should always be visible */
   .hero-input {
+    display: flex !important;
+  }
+  
+  .wix-search-bar {
     display: flex !important;
   }
 }
@@ -868,17 +1270,37 @@ style.innerHTML = `
   }
 }
 
+/* Mobile view class - applied via JS for Wix to use actual viewport width */
+/* This fixes Issue #3: maximize button visibility in Wix iframes */
+.iframe-container.mobile-view {
+  width: calc(100% - 3px);
+  height: calc(100dvh - 3px);
+  top: 0px;
+  right: 0px;
+}
+.iframe-container.mobile-view .maximize-iframe-btn {
+  display: none;
+}
+.iframe-container.mobile-view.wide {
+  width: calc(100% - 20px);
+  height: calc(100vh - 20px);
+  top: 10px;
+  right: 10px;
+}
+
+/* Non-Wix: use CSS media queries for responsive behavior */
+/* In Wix mode, responsive behavior is handled by JS using actual viewport width */
 @media (max-width: 992px){
-  .maximize-iframe-btn {
+  .iframe-container:not(.wix-mode) .maximize-iframe-btn {
     display: none;
   }
-  .iframe-container {
+  .iframe-container:not(.wix-mode) {
     width: calc(100% - 3px);
     height: calc(100dvh - 3px);
     top: 0px;
     right: 0px;
   }
-  .iframe-container.wide {
+  .iframe-container:not(.wix-mode).wide {
     width: calc(100% - 20px);
     height: calc(100vh - 20px);
     top: 10px;
@@ -893,9 +1315,98 @@ style.innerHTML = `
   color: var(--placeholder-color, #888);
 }
 
+/* Starter Questions Styles */
+.starter-questions-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 12px;
+  justify-content: flex-start;
+}
+
+.starter-question-chip {
+  background-color: #ffffff;
+  color: #77757B;
+  padding: 5.5px 10px;
+  border: 1px solid #E5E5E5;
+  border-radius: 16px;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: Manrope, sans-serif;
+  cursor: pointer;
+  max-width: 300px;
+  min-width: 100px;
+  white-space: normal;
+  height: auto;
+  text-align: left;
+  transition: background-color 0.2s ease;
+}
+
+.starter-question-chip:hover {
+  background-color: #F5F5F5;
+}
+
+.starter-question-chip:focus {
+  outline: 2px solid #5848f7;
+  outline-offset: 2px;
+}
+
+.starter-question-chip .chip-content {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  word-break: break-word;
+  white-space: normal;
+  text-align: left;
+  width: 100%;
+}
+
+.starter-question-chip .question-icon {
+  flex-shrink: 0;
+}
+
+@media (max-width: 650px) {
+  .starter-question-chip {
+    max-width: 100%;
+  }
+}
+
 /* Style for OpenResourcesBtn */
 .OpenResourcesBtn {
   background-color: red !important;
   color: #fff !important;
 }`;
-document.head.appendChild(style);
+
+// Add Wix-specific styles
+if (isWixPlatform) {
+  style.innerHTML += `
+/* Wix-specific styles */
+body {
+  margin: 0;
+  padding: 0;
+}
+`;
+
+  // Search bar only mode: center the search bar
+  if (wixComponent === 'searchBar') {
+    style.innerHTML += `
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 50px;
+}
+.input-container {
+  display: flex !important;
+  margin: 0 auto;
+}
+`;
+  }
+}
+if (document.head) {
+  document.head.appendChild(style);
+} else {
+  window.addEventListener('DOMContentLoaded', () => {
+    document.head.appendChild(style);
+  });
+}
