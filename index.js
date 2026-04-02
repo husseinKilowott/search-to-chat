@@ -137,20 +137,21 @@ async function fetchColors() {
     searchBarHero.fontColor =
       colors.data.fontColorHero || searchBarHero.fontColor;
 
-    // Fetch starter questions if enabled
-    if (colors.data.starterQuestionsHero) {
-      try {
-        const detailsResponse = await fetch(
-          `${baseUrl}/api/v1/skilly/${window.chatConfig.chatId}/details`
-        );
-        if (detailsResponse.ok) {
-          const detailsData = await detailsResponse.json();
+    // Fetch details for chatBubbleMode and optional starter questions
+    try {
+      const detailsResponse = await fetch(
+        `${baseUrl}/api/v1/skilly/${window.chatConfig.chatId}/details`
+      );
+      if (detailsResponse.ok) {
+        const detailsData = await detailsResponse.json();
+        chatBubbleMode = detailsData.data?.chatBubbleMode ?? chatBubbleMode;
+        if (colors.data.starterQuestionsHero) {
           searchBarHero.starterQuestions =
             detailsData.data?.starterQuestions || [];
         }
-      } catch (err) {
-        console.warn('Failed to fetch starter questions:', err);
       }
+    } catch (err) {
+      console.warn('Failed to fetch details:', err);
     }
 
     // Only initialize components based on platform/component config
@@ -194,7 +195,11 @@ button.classList.add('open-iframe-btn');
 button.setAttribute('aria-label', 'Open chat');
 function updateButtonStyles() {
   const useFallback = isCustomImageFallbackActive();
-  if (chatBubbleBackgroundColorEnabled || useFallback) {
+  if (isCustomImageBubble()) {
+    button.style.backgroundColor = 'transparent';
+    button.style.boxShadow = 'none';
+    button.style.borderRadius = '0';
+  } else if (chatBubbleBackgroundColorEnabled || useFallback) {
     // Normal styling with background color and shadow
     button.style.backgroundColor = chatColors.ChatBubbleBackgroundColor;
     button.style.boxShadow = '0px 4px 10px rgba(0, 0, 0, 0.2)';
@@ -360,7 +365,11 @@ function renderStarterQuestions(containerHero) {
 // Update default button styles
 function updateDefaultButtonStyles() {
   const useFallback = isCustomImageFallbackActive();
-  if (chatBubbleBackgroundColorEnabled || useFallback) {
+  if (isCustomImageBubble()) {
+    button.style.backgroundColor = 'transparent';
+    button.style.boxShadow = 'none';
+    button.style.borderRadius = '0';
+  } else if (chatBubbleBackgroundColorEnabled || useFallback) {
     button.style.backgroundColor =
       chatColors.ChatBubbleBackgroundColor || '#5848F7';
     button.style.boxShadow = '0px 4px 10px rgba(0, 0, 0, 0.2)';
