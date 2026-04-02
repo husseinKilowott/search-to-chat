@@ -36,9 +36,51 @@ let searchBarHero = {
 
 let chatBubbleBackgroundColorEnabled = true;
 let chatBubbleSize = '55';
+let chatBubbleMode = null;
+let customImageNaturalWidth = null;
 
 // Fetch colors from API
 let bubbleIconUrl = null;
+
+function isCustomImageBubble() {
+  return chatBubbleMode === 'custom_image';
+}
+
+function isCustomImageFallbackActive() {
+  const width = isWixPlatform ? actualViewportWidth : window.innerWidth;
+  return (
+    isCustomImageBubble() &&
+    customImageNaturalWidth !== null &&
+    customImageNaturalWidth > 100 &&
+    width < 992
+  );
+}
+
+function applyBubbleState() {
+  updateButtonStyles();
+  updateButtonSize(chatBubbleBackgroundColorEnabled);
+}
+
+function preloadCustomImage() {
+  if (!bubbleIconUrl || !isCustomImageBubble()) return;
+  const img = new Image();
+  img.onload = () => {
+    customImageNaturalWidth = img.naturalWidth;
+    applyBubbleState();
+  };
+  img.onerror = () => {
+    customImageNaturalWidth = 0;
+    applyBubbleState();
+  };
+  img.src = bubbleIconUrl;
+}
+
+let _bubbleResizeTimer = null;
+window.addEventListener('resize', () => {
+  if (!isCustomImageBubble() || customImageNaturalWidth === null) return;
+  clearTimeout(_bubbleResizeTimer);
+  _bubbleResizeTimer = setTimeout(applyBubbleState, 150);
+});
 async function fetchColors() {
   try {
     let baseUrl;
@@ -72,6 +114,7 @@ async function fetchColors() {
       colors.data.chatBubbleBackgroundColorEnabled ??
       chatBubbleBackgroundColorEnabled;
     chatBubbleSize = colors.data.chatBubbleSize || chatBubbleSize;
+    chatBubbleMode = colors.data.chatBubbleMode ?? chatBubbleMode;
 
     searchBarNav.shape = colors.data.shapeNav;
     searchBarNav.size = colors.data.sizeNav;
@@ -119,6 +162,9 @@ async function fetchColors() {
       appendButton();
       updateButtonStyles();
       updateButtonSize(chatBubbleBackgroundColorEnabled);
+      if (isCustomImageBubble() && bubbleIconUrl) {
+        preloadCustomImage();
+      }
     }
     if (!isWixPlatform || wixComponent === 'both') {
       updateInputBoxStyles();
@@ -147,7 +193,8 @@ var button = document.createElement('button');
 button.classList.add('open-iframe-btn');
 button.setAttribute('aria-label', 'Open chat');
 function updateButtonStyles() {
-  if (chatBubbleBackgroundColorEnabled) {
+  const useFallback = isCustomImageFallbackActive();
+  if (chatBubbleBackgroundColorEnabled || useFallback) {
     // Normal styling with background color and shadow
     button.style.backgroundColor = chatColors.ChatBubbleBackgroundColor;
     button.style.boxShadow = '0px 4px 10px rgba(0, 0, 0, 0.2)';
@@ -158,7 +205,7 @@ function updateButtonStyles() {
     button.style.boxShadow = 'none';
     button.style.borderRadius = 'none';
   }
-  if (bubbleIconUrl !== null) {
+  if (bubbleIconUrl !== null && !useFallback) {
     button.innerHTML = `<img src="${bubbleIconUrl}" alt="chat-icon" />`;
   } else {
     // button.innerHTML = isCMU ? cmuIcon : getChatIcon(chatColors.AccentColor);
@@ -167,12 +214,18 @@ function updateButtonStyles() {
 }
 
 function updateButtonSize(chatBubbleBackgroundColorEnabled) {
-  if (chatBubbleBackgroundColorEnabled) {
-    button.style.width = `${chatBubbleSize}px`;
-    button.style.height = `${chatBubbleSize}px`;
-  } else {
-    button.style.width = `${chatBubbleSize}px`;
-    button.style.height = `${chatBubbleSize}px`;
+  const useFallback = isCustomImageFallbackActive();
+  button.classList.toggle('custom-image-bubble', isCustomImageBubble() && !useFallback);
+  if (isCustomImageBubble() && !useFallback) {
+    button.style.width = 'auto';
+    button.style.height = 'auto';
+    button.style.padding = '0';
+    return;
+  }
+  const size = useFallback ? '64' : chatBubbleSize;
+  button.style.width = `${size}px`;
+  button.style.height = `${size}px`;
+  if (!chatBubbleBackgroundColorEnabled && !useFallback) {
     button.style.padding = '0';
   }
 }
@@ -306,7 +359,8 @@ function renderStarterQuestions(containerHero) {
 
 // Update default button styles
 function updateDefaultButtonStyles() {
-  if (chatBubbleBackgroundColorEnabled) {
+  const useFallback = isCustomImageFallbackActive();
+  if (chatBubbleBackgroundColorEnabled || useFallback) {
     button.style.backgroundColor =
       chatColors.ChatBubbleBackgroundColor || '#5848F7';
     button.style.boxShadow = '0px 4px 10px rgba(0, 0, 0, 0.2)';
@@ -316,7 +370,7 @@ function updateDefaultButtonStyles() {
     button.style.boxShadow = 'none';
     button.style.borderRadius = 'none';
   }
-  if (bubbleIconUrl !== null) {
+  if (bubbleIconUrl !== null && !useFallback) {
     button.innerHTML = `<img src="${bubbleIconUrl}" alt="chat-icon" />`;
   } else {
     // button.innerHTML = isCMU ? cmuIcon : getChatIcon(chatColors.AccentColor);
@@ -436,6 +490,11 @@ function updateResponsiveElements() {
     } else {
       iframeContainer.classList.remove('mobile-view');
     }
+  }
+
+  // Re-evaluate custom image fallback when viewport changes (Wix context)
+  if (isCustomImageBubble() && customImageNaturalWidth !== null) {
+    applyBubbleState();
   }
 }
 
@@ -1134,6 +1193,12 @@ style.innerHTML = `
   width: 100%;
   height: 100%;
   object-fit: contain;
+}
+.open-iframe-btn.custom-image-bubble img {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  display: block;
 }
 .iframe-container {
   display: none;
