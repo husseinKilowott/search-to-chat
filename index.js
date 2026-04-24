@@ -228,7 +228,7 @@ function updateButtonSize(chatBubbleBackgroundColorEnabled) {
     button.style.padding = '0';
     return;
   }
-  const size = useFallback ? '64' : chatBubbleSize;
+  const size = useFallback ? '66' : chatBubbleSize;
   button.style.width = `${size}px`;
   button.style.height = `${size}px`;
   if (!chatBubbleBackgroundColorEnabled && !useFallback) {
