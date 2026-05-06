@@ -3,6 +3,10 @@
 const isWixPlatform = window.chatConfig?.platform === 'wix';
 const wixComponent = window.chatConfig?.component || 'both'; // 'searchBar', 'chatBubble', or 'both'
 
+const _host = (window.location.hostname || '').toLowerCase();
+const isPointParkWebsite =
+  _host === 'pointpark.edu' || _host.endsWith('.pointpark.edu');
+
 // Store actual viewport width (from parent window in Wix context)
 // This fixes the maximize button visibility issue in Wix iframes
 let actualViewportWidth = window.innerWidth;
@@ -196,10 +200,10 @@ button.setAttribute('aria-label', 'Open chat');
 function updateButtonStyles() {
   const useFallback = isCustomImageFallbackActive();
   if (isCustomImageBubble()) {
-    const fallbackBg = chatBubbleBackgroundColorEnabled ? chatColors.ChatBubbleBackgroundColor : '#ffffff';
+    const fallbackBg = chatBubbleBackgroundColorEnabled ? chatColors.ChatBubbleBackgroundColor : '#fffff';
     button.style.backgroundColor = useFallback ? fallbackBg : 'transparent';
-    button.style.boxShadow = useFallback ? '0px 4px 10px rgba(0, 0, 0, 0.2)' : 'none';
-    button.style.borderRadius = '0';
+    button.style.boxShadow = useFallback ? (chatBubbleBackgroundColorEnabled ? '0px 4px 10px rgba(0, 0, 0, 0.2)' : 'none') : 'none';
+    button.style.borderRadius = useFallback ? '50%' :'0';
   } else if (chatBubbleBackgroundColorEnabled || useFallback) {
     // Normal styling with background color and shadow
     button.style.backgroundColor = chatColors.ChatBubbleBackgroundColor;
@@ -228,7 +232,7 @@ function updateButtonSize(chatBubbleBackgroundColorEnabled) {
     button.style.padding = '0';
     return;
   }
-  const size = useFallback ? '66' : chatBubbleSize;
+  const size = useFallback ? '64' : chatBubbleSize;
   button.style.width = `${size}px`;
   button.style.height = `${size}px`;
   if (!chatBubbleBackgroundColorEnabled && !useFallback) {
@@ -367,10 +371,10 @@ function renderStarterQuestions(containerHero) {
 function updateDefaultButtonStyles() {
   const useFallback = isCustomImageFallbackActive();
   if (isCustomImageBubble()) {
-    const fallbackBg = chatBubbleBackgroundColorEnabled ? chatColors.ChatBubbleBackgroundColor : '#ffffff';
+    const fallbackBg = chatBubbleBackgroundColorEnabled ? chatColors.ChatBubbleBackgroundColor : '#fffff';
     button.style.backgroundColor = useFallback ? fallbackBg : 'transparent';
-    button.style.boxShadow = useFallback ? '0px 4px 10px rgba(0, 0, 0, 0.2)' : 'none';
-    button.style.borderRadius = '0';
+    button.style.boxShadow = useFallback ? (chatBubbleBackgroundColorEnabled ? '0px 4px 10px rgba(0, 0, 0, 0.2)' : 'none') : 'none';
+    button.style.borderRadius = useFallback ? '50%' :'0';
   } else if (chatBubbleBackgroundColorEnabled || useFallback) {
     button.style.backgroundColor =
       chatColors.ChatBubbleBackgroundColor || '#5848F7';
@@ -1170,7 +1174,7 @@ style.innerHTML = `
   border: none;
   cursor: pointer;
   z-index: 9999999;
-  bottom: 20px;
+  bottom: ${isPointParkWebsite ? '90px' : '20px'};
   right: 20px;
   padding: 5px;
   position: fixed;
