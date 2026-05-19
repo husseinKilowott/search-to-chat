@@ -717,7 +717,7 @@ function setupIframeOnLoad() {
     closeIframeButton.setAttribute('tabindex', '0');
     closeIframeButton.setAttribute('role', 'button');
 
-    iframe.allow = `clipboard-read * self ${iframe.src}; clipboard-write *`;
+    iframe.allow = `clipboard-read * self ${iframe.src}; clipboard-write *; microphone *`;
 
     // create maximize button
     maximizeBtn = document.createElement('button');
